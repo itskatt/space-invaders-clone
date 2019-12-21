@@ -25,22 +25,25 @@ PAUSE_TEXT_BLINK_SPEED = 5
 # font
 FONT_SIZE = round(14 * SCREEN_SIZE[0] / BASE_SCREEN_SIZE[0])
 
-# game
+# lasers
 LASER_SPEED = 5 * SCREEN_SIZE[1] / BASE_SCREEN_SIZE[1]
 
+# our ship
 SHIP_SPEED = 6 * SCREEN_SIZE[0] / BASE_SCREEN_SIZE[0]
 SHIP_HEALTH = 10
 
+# the other ships
 ENEMI_SHIP_HEALTH = (2, 4)
 ENEMI_SHIP_SPEED = 4 * SCREEN_SIZE[0] / BASE_SCREEN_SIZE[0]
 ENEMI_SHIP_SHOOT_INTERVAL = (8, 12)  # 1/10th of a second
 ENEMI_SHIP_NO_SHOOT_TIME = (5, 14)  # 1/10th of a second
 ENEMI_SHIP_SPAWN_INTERVAL = 3 * 1000
 
-# events
+# custom events
 SHIP_SPAWN_EVENT = pygame.USEREVENT + 1
 DEATH_EVENT = pygame.USEREVENT + 2
 
+# blocked events
 BLOCKED_EVENTS = [  # events not in use blocked for performance
     pygame.MOUSEBUTTONDOWN,
     pygame.MOUSEBUTTONUP,
