@@ -99,7 +99,7 @@ class Game:
             self.scene.clear_screen()
             self.scene.draw()
 
-            pygame.display.flip()
+            self.scene.update_screen()
 
             # if self.timeout is set, check if we can quit the game
             if self.timeout and (self.loop_time - self.start_time) >= self.timeout:

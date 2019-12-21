@@ -26,6 +26,9 @@ class BaseScene:
     def draw(self):
         pass
 
+    def update_screen(self):
+        pygame.display.flip()
+
 
 class PlaylessScene(BaseScene): # TODO: find a better name
     def __init__(self, game, text, last_scene):
