@@ -1,9 +1,6 @@
 import argparse
-import functools
 import logging
-import math
 import os
-import random
 import sys
 import time
 import traceback
@@ -12,18 +9,16 @@ from contextlib import contextmanager
 
 import pygame
 
-from .assets import get_sprite, load_assets, pixeled
-from .constants import (BG_SCROOL_SPEED, BLACK, BLOCKED_EVENTS, BLUE,
-                        DEATH_EVENT, ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE,
-                        SCREEN_SIZE, SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE,
-                        WINDOW_TITLE)
+from .assets import load_assets
+from .constants import BLOCKED_EVENTS, DEATH_EVENT, SCREEN_SIZE, WINDOW_TITLE
 from .scenes import DeathScene, PauseScene
 from .scenes.main import MainScene
-from .ships import EnemiShip, Ship
+from .ships import Ship
 
 log = logging.getLogger(__name__)
 
 # see: https://stackoverflow.com/questions/6395923/any-way-to-speed-up-python-and-pygame
+
 
 class Game:
     FPS = 60

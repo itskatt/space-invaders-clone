@@ -30,7 +30,7 @@ class BaseScene:
         pygame.display.flip()
 
 
-class PlaylessScene(BaseScene): # TODO: find a better name
+class PlaylessScene(BaseScene):  # TODO: find a better name
     def __init__(self, game, text, last_scene):
         super().__init__(game)
 

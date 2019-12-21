@@ -6,7 +6,6 @@ from .assets import get_sprite
 from .constants import (ENEMI_SHIP_SPEED, RED, SHIP_HEALTH, SHIP_SPAWN_EVENT,
                         SHIP_SPEED, DEATH_EVENT)
 from .lasers import EnemiLaser, Laser
-from .scenes import DeathScene
 
 
 def get_damaged(img):
