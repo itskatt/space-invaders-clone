@@ -60,9 +60,10 @@ class MainScene(BaseScene):
         for obj in self.objects:
             obj.update()
 
-    def draw(self):
+    def clear_screen(self):
         self.draw_bg()  # also clears off the screen
 
+    def draw(self):
         self.ship.draw(self.screen)
         for obj in self.objects:
             obj.draw(self.screen)

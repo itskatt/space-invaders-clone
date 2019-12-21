@@ -1,3 +1,5 @@
+import operator
+
 import pygame
 
 from ..assets import pixeled
@@ -18,15 +20,22 @@ class BaseScene:
     def update(self):
         pass
 
+    def clear_screen(self):
+        pass
+
     def draw(self):
         pass
 
 
-class PauseScene(BaseScene):
-    def __init__(self, game, last_scene):
+class PlaylessScene(BaseScene): # TODO: find a better name
+    def __init__(self, game, text, last_scene):
         super().__init__(game)
 
         self.last_scene = last_scene
+        self.text = text
+
+        self.opacity = 255
+        self.op = operator.sub
 
         screen = pygame.Surface(game.screen_size)
         screen.fill(BLACK)
@@ -34,14 +43,44 @@ class PauseScene(BaseScene):
 
         self.screen.blit(screen, (0, 0))
 
+        self.dark_screen = self.screen.copy()
+
+    def draw_main_text(self, text, opacity):
         font = pixeled(FONT_SIZE * 2)
 
-        pause_text = font.render("Paused", True, WHITE)
-        pause_txt_rect = pause_text.get_rect(center=(
-            game.screen_width / 2,
-            game.screen_height / 2
+        main_text = font.render(text, True, WHITE)
+        main_txt_rect = main_text.get_rect(center=(
+            self.game.screen_width / 2,
+            self.game.screen_height / 2
         ))
-        self.screen.blit(pause_text, pause_txt_rect)
+        if opacity != 255:
+            surf = pygame.Surface(main_text.get_size())
+            surf.blit(main_text, (0, 0))
+            surf.set_colorkey(BLACK)
+            surf.set_alpha(opacity)
+        else:
+            surf = main_text
+
+        self.screen.blit(surf, main_txt_rect)
+
+    def update(self):
+        self.opacity = self.op(self.opacity, 5)
+
+        if self.opacity <= 50:
+            self.op = operator.add
+        elif self.opacity >= 255:
+            self.op = operator.sub
+
+    def clear_screen(self):
+        self.screen.blit(self.dark_screen, (0, 0))
+
+    def draw(self):
+        self.draw_main_text(self.text, self.opacity)
+
+
+class PauseScene(PlaylessScene):
+    def __init__(self, game, last_scene):
+        super().__init__(game, "Paused", last_scene)
 
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -50,23 +89,6 @@ class PauseScene(BaseScene):
                 self.game.switch_scene(self.last_scene)
 
 
-class DeathScene(BaseScene):
+class DeathScene(PlaylessScene):
     def __init__(self, game, last_scene):
-        super().__init__(game)
-
-        self.last_scene = last_scene
-
-        screen = pygame.Surface(game.screen_size)
-        screen.fill(BLACK)
-        screen.set_alpha(255 / 2)
-
-        self.screen.blit(screen, (0, 0))
-
-        font = pixeled(FONT_SIZE * 2)
-
-        pause_text = font.render("You died", True, WHITE)
-        pause_txt_rect = pause_text.get_rect(center=(
-            game.screen_width / 2,
-            game.screen_height / 2
-        ))
-        self.screen.blit(pause_text, pause_txt_rect)
+        super().__init__(game, "You died", last_scene)

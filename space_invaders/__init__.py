@@ -96,9 +96,10 @@ class Game:
 
             # main logic
             self.scene.update()
+            self.scene.clear_screen()
             self.scene.draw()
 
-            pygame.display.flip()  # TODO: dont run if paused (for now)
+            pygame.display.flip()
 
             # if self.timeout is set, check if we can quit the game
             if self.timeout and (self.loop_time - self.start_time) >= self.timeout:
