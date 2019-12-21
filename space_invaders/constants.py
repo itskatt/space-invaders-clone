@@ -35,6 +35,7 @@ ENEMI_SHIP_SPAWN_INTERVAL = 3 * 1000
 
 # events
 SHIP_SPAWN_EVENT = pygame.USEREVENT + 1
+DEATH_EVENT = pygame.USEREVENT + 2
 
 BLOCKED_EVENTS = [  # events not in use blocked for performance
     pygame.MOUSEBUTTONDOWN,

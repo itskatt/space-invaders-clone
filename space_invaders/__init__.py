@@ -14,9 +14,10 @@ import pygame
 
 from .assets import get_sprite, load_assets, pixeled
 from .constants import (BG_SCROOL_SPEED, BLACK, BLOCKED_EVENTS, BLUE,
-                        ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SCREEN_SIZE,
-                        SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE, WINDOW_TITLE)
-from .scenes import PauseScene
+                        DEATH_EVENT, ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE,
+                        SCREEN_SIZE, SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE,
+                        WINDOW_TITLE)
+from .scenes import DeathScene, PauseScene
 from .scenes.main import MainScene
 from .ships import EnemiShip, Ship
 
@@ -86,7 +87,10 @@ class Game:
                     if event.key == pygame.K_ESCAPE and not self.is_paused:
                         self.is_paused = True
                         self.switch_scene(PauseScene(self, self.scene), scene_cleanup=False)
-                        continue  # we don't want the pause scene to catch this event below
+                        continue  # we don't want the pause scene to catch this event
+
+                elif event.type == DEATH_EVENT:
+                    self.switch_scene(DeathScene(self, self.scene), scene_cleanup=False)
 
                 self.scene.process_event(event)
 
