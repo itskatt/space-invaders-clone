@@ -16,9 +16,7 @@ class BaseScene:
         self.game = game
         self.screen = game.screen
 
-    def switch_scene(self, scene):
-        self.game.scene.cleanup()
-        self.game.scene = scene  # TODO: adapt if necesary
+        self.last_scene = None
 
     def cleanup(self):
         raise NotImplementedError
@@ -31,6 +29,10 @@ class BaseScene:
 
     def draw(self):
         raise NotImplementedError
+
+
+class PauseScene(BaseScene):
+    pass
 
 
 class MainScene(BaseScene):
@@ -66,6 +68,8 @@ class MainScene(BaseScene):
         pygame.time.set_timer(SHIP_SPAWN_EVENT, ENEMI_SHIP_SPAWN_INTERVAL)
 
     def cleanup(self):
+        for obj in self.objects:
+            obj.empty()
         pygame.time.set_timer(SHIP_SPAWN_EVENT, 0)  # disable the timer
 
     def process_event(self, event):

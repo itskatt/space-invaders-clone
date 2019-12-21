@@ -59,6 +59,13 @@ class Game:
         # scene + init
         self.scene = MainScene(self)
 
+    def switch_scene(self, scene, *, save=False):
+        if save:
+            scene.last_scene = scene
+        else:
+            self.scene.cleanup()
+        self.scene = scene
+
     def pause(self, text):
         screen = pygame.Surface(SCREEN_SIZE)
         screen.fill(BLACK)
