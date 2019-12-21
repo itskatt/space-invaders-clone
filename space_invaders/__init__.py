@@ -16,7 +16,7 @@ from .assets import get_sprite, load_assets, pixeled
 from .constants import (BG_SCROOL_SPEED, BLACK, BLOCKED_EVENTS, BLUE,
                         ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SCREEN_SIZE,
                         SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE, WINDOW_TITLE)
-from .scenes import MainScene
+from .scenes import MainScene, PauseScene
 from .ships import EnemiShip, Ship
 
 log = logging.getLogger(__name__)
@@ -59,36 +59,19 @@ class Game:
         # scene + init
         self.scene = MainScene(self)
 
-    def switch_scene(self, scene, *, save=False):
-        if save:
-            scene.last_scene = scene
-        else:
+    def switch_scene(self, scene, *, scene_cleanup=True):
+        if scene_cleanup:
             self.scene.cleanup()
         self.scene = scene
 
-    def pause(self, text):
-        screen = pygame.Surface(SCREEN_SIZE)
-        screen.fill(BLACK)
-        screen.set_alpha(255 / 2)
-
-        self.screen.blit(screen, (0, 0))
-
-        font = pixeled(FONT_SIZE * 2)
-
-        pause_text = font.render(text, True, WHITE)
-        pause_txt_rect = pause_text.get_rect(center=(
-            self.screen_width / 2,
-            self.screen_height / 2
-        ))
-        self.screen.blit(pause_text, pause_txt_rect)
-
     def mainloop(self):
-        pause_screen_drawn = False
         running = True
         while running:
             self.loop_time = time.time()
 
+            # event processing
             for event in pygame.event.get():  # NOTE: check BOCKED_EVENTS before messing with new events
+
                 if event.type == pygame.QUIT:
                     log.info("Quitting")
                     running = False
@@ -99,30 +82,25 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     self.pressed_keys[event.key] = True
 
-                    if event.key == pygame.K_ESCAPE:
-                        if self.ship.health > 0:
-                            self.is_paused = not self.is_paused
-                
+                    if event.key == pygame.K_ESCAPE and not self.is_paused:
+                        print("pause")
+                        self.is_paused = True
+                        self.switch_scene(PauseScene(self, self.scene), scene_cleanup=False)
+                        continue  # we don't want the pause scene to catch this event below
+
                 self.scene.process_event(event)
+                
+            # main logic
+            self.scene.update()
+            self.scene.draw()
 
-            if not self.is_paused:
-                if pause_screen_drawn:
-                    pause_screen_drawn = False
+            pygame.display.flip()  # TODO: dont run if paused (for now)
 
-                self.scene.update()
-                self.scene.draw()
-
-                pygame.display.flip()
-
-            else:
-                if not pause_screen_drawn:
-                    self.pause("You died" if self.ship.health <= 0 else "Paused")
-                    pygame.display.flip()
-                    pause_screen_drawn = True
-
+            # if self.timeout is set, check if we can quit the game
             if self.timeout and (self.loop_time - self.start_time) >= self.timeout:
                 sys.exit()
 
+            # tick-tock-tick-tock-tick-tock
             self.clock.tick(self.FPS)
 
 

@@ -16,23 +16,46 @@ class BaseScene:
         self.game = game
         self.screen = game.screen
 
-        self.last_scene = None
-
     def cleanup(self):
-        raise NotImplementedError
+        pass
 
     def process_event(self, event):
-        raise NotImplementedError
+        pass
 
     def update(self):
-        raise NotImplementedError
+        pass
 
     def draw(self):
-        raise NotImplementedError
+        pass
 
 
 class PauseScene(BaseScene):
-    pass
+    def __init__(self, game, last_scene):
+        super().__init__(game)
+
+        self.last_scene = last_scene
+
+        screen = pygame.Surface(game.screen_size)
+        screen.fill(BLACK)
+        screen.set_alpha(255 / 2)
+
+        self.screen.blit(screen, (0, 0))
+
+        font = pixeled(FONT_SIZE * 2)
+
+        pause_text = font.render("Paused", True, WHITE)
+        pause_txt_rect = pause_text.get_rect(center=(
+            game.screen_width / 2,
+            game.screen_height / 2
+        ))
+        self.screen.blit(pause_text, pause_txt_rect)
+
+    def process_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE and self.game.is_paused:
+                print("unpause")
+                self.game.is_paused = False
+                self.game.switch_scene(self.last_scene)
 
 
 class MainScene(BaseScene):

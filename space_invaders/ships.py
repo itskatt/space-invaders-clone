@@ -65,7 +65,7 @@ class Ship(BaseShip):
         self.image = self.damaged_img
         self.last_hit_time = self.game.loop_time
         if self.health <= 0:
-            self.game.is_paused = True
+            self.game.switch_scene()  # TODO: change
 
     def update(self):
         # lets try moving the ship
