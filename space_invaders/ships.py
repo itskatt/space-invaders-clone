@@ -58,7 +58,7 @@ class Ship(BaseShip):
                 self.fire()
 
     def fire(self):
-        self.game.lasers.add(Laser(self.game, self.rect.midtop))
+        self.game.scene.lasers.add(Laser(self.game, self.game.scene, self.rect.midtop))
 
     def on_collision(self):
         self.health -= 1
@@ -86,8 +86,10 @@ class Ship(BaseShip):
 
 
 class EnemiShip(BaseShip):
-    def __init__(self, game, original_position, direction):
+    def __init__(self, game, scene, original_position, direction):
         super().__init__(game)
+
+        self.scene = scene
 
         self.normal_img = pygame.transform.rotate(
             get_sprite("enemi-ship"), 180)  # TODO: change
@@ -108,7 +110,7 @@ class EnemiShip(BaseShip):
         # self.is_sliding = False
 
     def fire(self):
-        self.game.lasers.add(EnemiLaser(self.game, self.rect.midbottom))
+        self.scene.lasers.add(EnemiLaser(self.game, self.scene, self.rect.midbottom))
 
     def on_collision(self):
         self.health -= 1

@@ -16,6 +16,7 @@ from .assets import get_sprite, load_assets, pixeled
 from .constants import (BG_SCROOL_SPEED, BLACK, BLOCKED_EVENTS, BLUE,
                         ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SCREEN_SIZE,
                         SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE, WINDOW_TITLE)
+from .scenes import MainScene
 from .ships import EnemiShip, Ship
 
 log = logging.getLogger(__name__)
@@ -36,25 +37,7 @@ class Game:
 
         self.screen.set_alpha(None)  # possible performance improvement, remove if troube is caused
 
-        # background
-        self.bg_img = get_sprite("background")
-        self.bg_rect = self.bg_img.get_rect(topleft=(0, 0))
-        self.bg_img_y_pos = 0.0
-
-        # status text
-        self.status_text_bg = pygame.Surface((
-                self.screen_width / 7,
-                self.screen_height / 7
-        ))
-
-        # sprites
-        self.lasers = pygame.sprite.Group()
-        self.enemi_ships = pygame.sprite.Group()
-
-        self.objects = [  # TODO: change to custom class for ex ?
-            self.lasers,
-            self.enemi_ships
-        ]
+        # ship
         self.ship = Ship(self)
         self.score = 0
 
@@ -69,77 +52,12 @@ class Game:
         # keys
         self.pressed_keys = defaultdict(bool)
 
-        # game init
-        self.spawn_enemi_ships(5)
-        pygame.time.set_timer(SHIP_SPAWN_EVENT, ENEMI_SHIP_SPAWN_INTERVAL)
-
+        # blocked events
         for event in BLOCKED_EVENTS:
             pygame.event.set_blocked(event)
 
-    def spawn_enemi_ships(self, count):
-        # this func is a mess
-        if self.is_paused:
-            return
-        pad = round(self.screen_width / 20)
-        spawn_aera = (
-            self.screen_width - pad,
-            round(self.screen_height / 11.25)
-        )
-        xpositions = random.sample(range(pad, spawn_aera[0], math.ceil(spawn_aera[0] / count)), count)
-        for pos in xpositions:
-            self.enemi_ships.add(EnemiShip(
-                self,
-                (pos, spawn_aera[1]),
-                random.choice((0, 1))
-            ))
-
-    @functools.lru_cache(1)  # TODO: change probably ?
-    def _get_status_box(self, score, health):
-        bg = self.status_text_bg
-        bg.fill(WHITE)
-        bg.set_alpha(255 / 2)
-
-        width = bg.get_width()
-        height = bg.get_height()
-        centerx = width / 2
-        font = pixeled(FONT_SIZE)
-
-        score = font.render(f"Score: {score}", False, BLACK)
-        score_rect = score.get_rect(center=(centerx, round(height / 4)))
-
-        health = font.render(f"Health: {health}", False, BLACK)
-        health_rect = health.get_rect(center=(centerx, round(height / 4 * 2.5)))
-
-        bg.blit(score, score_rect)
-        bg.blit(health, health_rect)
-
-        linew = round(height / 13)
-        pygame.draw.line(
-            bg, BLUE,
-            (0, height - linew / 2),
-            (round((self.ship.health * width) / SHIP_HEALTH), height - linew / 2),
-            linew
-        )
-
-        return bg
-
-    def draw_status_box(self):
-        bg = self._get_status_box(self.score, self.ship.health)
-
-        self.screen.blit(bg, (
-            self.screen_width - bg.get_width(),
-            self.screen_height - bg.get_height()
-        ))
-
-    @functools.lru_cache(5)
-    def _get_fps_text(self, fps):
-        font = pixeled(round(FONT_SIZE / 2))
-        fps_text = font.render(f"FPS: {round(fps)}", False, WHITE)
-        return fps_text
-
-    def display_fps(self):
-        fps_text = self._get_fps_text(round(self.clock.get_fps()))
-        self.screen.blit(fps_text, (0, 0))
+        # scene + init
+        self.scene = MainScene(self)
 
     def pause(self, text):
         screen = pygame.Surface(SCREEN_SIZE)
@@ -157,19 +75,6 @@ class Game:
         ))
         self.screen.blit(pause_text, pause_txt_rect)
 
-    def update_bg(self):
-        self.bg_img_y_pos += BG_SCROOL_SPEED
-        if self.bg_img_y_pos >= self.screen_height:
-            self.bg_img_y_pos = self.screen_height - self.bg_img.get_height()
-
-        self.bg_rect.y = self.bg_img_y_pos
-
-        if self.bg_rect.y > 0:
-            self.screen.blit(self.bg_img, (0, self.bg_rect.y - self.screen_height))
-
-        # sub = self.bg_img.subsurface((0, 0), self.screen_size)  TODO: subsurface?
-        self.screen.blit(self.bg_img, self.bg_rect)
-
     def mainloop(self):
         pause_screen_drawn = False
         running = True
@@ -185,37 +90,20 @@ class Game:
                     self.pressed_keys[event.key] = False
 
                 elif event.type == pygame.KEYDOWN:
-                    key = event.key
+                    self.pressed_keys[event.key] = True
 
-                    self.pressed_keys[key] = True
-
-                    if key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE:
                         if self.ship.health > 0:
                             self.is_paused = not self.is_paused
-
-                elif event.type == SHIP_SPAWN_EVENT:
-                    self.spawn_enemi_ships(random.randint(2, 3))
-
-                self.ship.get_event(event)
+                
+                self.scene.process_event(event)
 
             if not self.is_paused:
                 if pause_screen_drawn:
                     pause_screen_drawn = False
 
-                self.update_bg()  # also clears off the screen
-
-                # updating
-                self.ship.update()
-                for obj in self.objects:  # TODO: change ?
-                    obj.update()
-
-                # drawing
-                self.ship.draw(self.screen)
-                for obj in self.objects:
-                    obj.draw(self.screen)
-
-                self.draw_status_box()
-                self.display_fps()
+                self.scene.update()
+                self.scene.draw()
 
                 pygame.display.flip()
 

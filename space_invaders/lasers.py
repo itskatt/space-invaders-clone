@@ -5,11 +5,12 @@ from .constants import LASER_SPEED, WHITE
 
 
 class BaseLaser(pygame.sprite.Sprite):
-    def __init__(self, game, original_position):
+    def __init__(self, game, scene, original_position):
         super().__init__()
         self._get_image()
 
         self.game = game
+        self.scene = scene
 
         self.rect = self.image.get_rect(center=original_position)
 
@@ -40,7 +41,7 @@ class Laser(BaseLaser):
         self.rect.y = self.rect.y - self.speed
 
     def is_colliding(self):
-        collisions = pygame.sprite.spritecollide(self, self.game.enemi_ships, False)
+        collisions = pygame.sprite.spritecollide(self, self.scene.enemi_ships, False)
         if collisions and pygame.sprite.spritecollideany(self, collisions, pygame.sprite.collide_mask):
             [c.on_collision() for c in collisions]
             return True
