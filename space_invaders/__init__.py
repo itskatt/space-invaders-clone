@@ -16,7 +16,8 @@ from .assets import get_sprite, load_assets, pixeled
 from .constants import (BG_SCROOL_SPEED, BLACK, BLOCKED_EVENTS, BLUE,
                         ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SCREEN_SIZE,
                         SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE, WINDOW_TITLE)
-from .scenes import MainScene, PauseScene
+from .scenes import PauseScene
+from .scenes.main import MainScene
 from .ships import EnemiShip, Ship
 
 log = logging.getLogger(__name__)
@@ -83,13 +84,12 @@ class Game:
                     self.pressed_keys[event.key] = True
 
                     if event.key == pygame.K_ESCAPE and not self.is_paused:
-                        print("pause")
                         self.is_paused = True
                         self.switch_scene(PauseScene(self, self.scene), scene_cleanup=False)
                         continue  # we don't want the pause scene to catch this event below
 
                 self.scene.process_event(event)
-                
+
             # main logic
             self.scene.update()
             self.scene.draw()

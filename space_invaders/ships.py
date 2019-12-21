@@ -6,6 +6,7 @@ from .assets import get_sprite
 from .constants import (ENEMI_SHIP_SPEED, RED, SHIP_HEALTH, SHIP_SPAWN_EVENT,
                         SHIP_SPEED)
 from .lasers import EnemiLaser, Laser
+from .scenes import DeathScene
 
 
 def get_damaged(img):
@@ -65,7 +66,7 @@ class Ship(BaseShip):
         self.image = self.damaged_img
         self.last_hit_time = self.game.loop_time
         if self.health <= 0:
-            self.game.switch_scene()  # TODO: change
+            self.game.switch_scene(DeathScene(self.game, self.game.scene), scene_cleanup=False)
 
     def update(self):
         # lets try moving the ship

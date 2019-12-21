@@ -4,58 +4,12 @@ import random
 
 import pygame
 
-from .assets import get_sprite, pixeled
-from .constants import (BG_SCROOL_SPEED, BLACK, BLUE,
-                        ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
-                        SHIP_SPAWN_EVENT, WHITE)
-from .ships import EnemiShip
-
-
-class BaseScene:
-    def __init__(self, game):
-        self.game = game
-        self.screen = game.screen
-
-    def cleanup(self):
-        pass
-
-    def process_event(self, event):
-        pass
-
-    def update(self):
-        pass
-
-    def draw(self):
-        pass
-
-
-class PauseScene(BaseScene):
-    def __init__(self, game, last_scene):
-        super().__init__(game)
-
-        self.last_scene = last_scene
-
-        screen = pygame.Surface(game.screen_size)
-        screen.fill(BLACK)
-        screen.set_alpha(255 / 2)
-
-        self.screen.blit(screen, (0, 0))
-
-        font = pixeled(FONT_SIZE * 2)
-
-        pause_text = font.render("Paused", True, WHITE)
-        pause_txt_rect = pause_text.get_rect(center=(
-            game.screen_width / 2,
-            game.screen_height / 2
-        ))
-        self.screen.blit(pause_text, pause_txt_rect)
-
-    def process_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE and self.game.is_paused:
-                print("unpause")
-                self.game.is_paused = False
-                self.game.switch_scene(self.last_scene)
+from ..assets import get_sprite, pixeled
+from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
+                         ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
+                         SHIP_SPAWN_EVENT, WHITE)
+from ..ships import EnemiShip
+from . import BaseScene
 
 
 class MainScene(BaseScene):
