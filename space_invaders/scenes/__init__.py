@@ -3,7 +3,7 @@ import operator
 import pygame
 
 from ..assets import pixeled
-from ..constants import BLACK, FONT_SIZE, WHITE
+from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE
 
 
 class BaseScene:
@@ -67,7 +67,7 @@ class PlaylessScene(BaseScene):  # TODO: find a better name
         self.screen.blit(surf, main_txt_rect)
 
     def update(self):
-        self.opacity = self.op(self.opacity, 5)
+        self.opacity = self.op(self.opacity, PAUSE_TEXT_BLINK_SPEED)
 
         if self.opacity <= 50:
             self.op = operator.add

@@ -3,8 +3,10 @@ import random
 import pygame
 
 from .assets import get_sprite
-from .constants import (ENEMI_SHIP_SPEED, RED, SHIP_HEALTH, SHIP_SPAWN_EVENT,
-                        SHIP_SPEED, DEATH_EVENT)
+from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
+                        ENEMI_SHIP_NO_SHOOT_TIME, ENEMI_SHIP_SHOOT_INTERVAL,
+                        ENEMI_SHIP_SPEED, RED, SHIP_HEALTH, SHIP_SPAWN_EVENT,
+                        SHIP_SPEED)
 from .lasers import EnemiLaser, Laser
 
 
@@ -99,13 +101,13 @@ class EnemiShip(BaseShip):
         self.rect = self.image.get_rect(center=original_position)
 
         self.speed = ENEMI_SHIP_SPEED
-        self.shoot_interval = random.randint(8, 12) / 10
+        self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
 
-        self.health = random.randint(2, 4)
+        self.health = random.randint(*ENEMI_SHIP_HEALTH)
         self.direction = direction
 
         self.last_shoot_time = self.game.loop_time + \
-            random.randint(5, 14) / 10  # give some time before shooting
+            random.randint(*ENEMI_SHIP_NO_SHOOT_TIME) / 10  # give some time before shooting
 
         # self.is_sliding = False
 
@@ -152,7 +154,7 @@ class EnemiShip(BaseShip):
         if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
             self.image = self.normal_img
 
-        # prevent ship stacking TODO: make it work eventually
+        # prevent ship stacking TODO: make it work eventually. yes, eventually
         # for ship in self.game.enemi_ships.sprites():
         #     if ship == self or ship.rect.x > self.rect.x:
         #         pass

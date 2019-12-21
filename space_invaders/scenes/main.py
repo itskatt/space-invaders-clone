@@ -73,8 +73,6 @@ class MainScene(BaseScene):
 
     def spawn_enemi_ships(self, count):
         # this func is a mess
-        # if self.is_paused:
-        #     return
         pad = round(self.game.screen_width / 20)
         spawn_aera = (
             self.game.screen_width - pad,
