@@ -9,10 +9,10 @@ from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
                          ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, WHITE)
 from ..ships import EnemiShip
-from . import BaseScene
+from . import GameScene
 
 
-class MainScene(BaseScene):
+class MainScene(GameScene):
     def __init__(self, game):
         super().__init__(game)
 

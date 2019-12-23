@@ -30,6 +30,10 @@ class BaseScene:
         pygame.display.flip()
 
 
+class GameScene(BaseScene):
+    pass
+
+
 class PlaylessScene(BaseScene):  # TODO: find a better name
     def __init__(self, game, text, last_scene):
         super().__init__(game)
