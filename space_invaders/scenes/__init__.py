@@ -10,6 +10,7 @@ class BaseScene:
     def __init__(self, game):
         self.game = game
         self.screen = game.screen
+        self.screen_rect = game.screen_rect
 
     def cleanup(self):
         pass
@@ -44,31 +45,32 @@ class PlaylessScene(BaseScene):  # TODO: find a better name
         self.opacity = 255
         self.op = operator.sub
 
+        self.to_update = []
+
+        # create the darkened screen
         screen = pygame.Surface(game.screen_size)
         screen.fill(BLACK)
         screen.set_alpha(255 / 2)
 
         self.screen.blit(screen, (0, 0))
+        self.to_update.append(self.screen_rect)
 
         self.dark_screen = self.screen.copy()
 
-    def draw_main_text(self, text, opacity):
-        font = pixeled(FONT_SIZE * 2)
+    def get_text(self, text, size, opacity):
+        font = pixeled(size)
 
-        main_text = font.render(text, True, WHITE)
-        main_txt_rect = main_text.get_rect(center=(
-            self.game.screen_width / 2,
-            self.game.screen_height / 2
-        ))
+        rendered_text = font.render(text, True, WHITE)
+
         if opacity != 255:
-            surf = pygame.Surface(main_text.get_size())
-            surf.blit(main_text, (0, 0))
+            surf = pygame.Surface(rendered_text.get_size())
+            surf.blit(rendered_text, (0, 0))
             surf.set_colorkey(BLACK)
             surf.set_alpha(opacity)
         else:
-            surf = main_text
+            surf = rendered_text
 
-        self.screen.blit(surf, main_txt_rect)
+        return surf
 
     def update(self):
         self.opacity = self.op(self.opacity, PAUSE_TEXT_BLINK_SPEED)
@@ -78,11 +80,23 @@ class PlaylessScene(BaseScene):  # TODO: find a better name
         elif self.opacity >= 255:
             self.op = operator.sub
 
-    def clear_screen(self):  # TODO: change
-        self.screen.blit(self.dark_screen, (0, 0))
+    def clear_screen(self):
+        if self.to_update:
+            for update in self.to_update:
+                self.screen.blit(self.dark_screen.subsurface(update), update)
+        else:
+            self.screen.blit(self.dark_screen, (0, 0))
 
     def draw(self):
-        self.draw_main_text(self.text, self.opacity)
+        text = self.get_text(self.text, FONT_SIZE * 2, self.opacity)
+        text_rect = text.get_rect(center=(self.screen_rect.center))
+        self.screen.blit(text, text_rect)
+
+        self.to_update.append(text_rect)
+
+    def update_screen(self):
+        pygame.display.update(self.to_update)
+        self.to_update.clear()
 
 
 class PauseScene(PlaylessScene):
@@ -96,6 +110,6 @@ class PauseScene(PlaylessScene):
                 self.game.switch_scene(self.last_scene)
 
 
-class DeathScene(PlaylessScene):
+class DeathScene(PlaylessScene):  # TODO: press r to restart
     def __init__(self, game, last_scene):
         super().__init__(game, "You died", last_scene)
