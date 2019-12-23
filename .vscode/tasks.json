@@ -7,6 +7,16 @@
             "label": "profile",
             "type": "shell",
             "command": "python tools.py profile"
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "python tools.py build"
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "python tools.py clean"
         }
     ]
 }
