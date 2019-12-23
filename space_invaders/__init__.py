@@ -10,7 +10,7 @@ from contextlib import contextmanager
 import pygame
 
 from .assets import load_assets
-from .constants import BLOCKED_EVENTS, DEATH_EVENT, SCREEN_SIZE, WINDOW_TITLE, DIR
+from .constants import BLOCKED_EVENTS, DEATH_EVENT, SCREEN_SIZE, WINDOW_TITLE, DIR, DISPLAY_FLAGS
 from .scenes import DeathScene, PauseScene
 from .scenes.main import MainScene
 from .ships import Ship
@@ -27,12 +27,21 @@ class Game:
         self.timeout = timeout
 
         # screen
+        self.display_info = pygame.display.Info()
+
         self.screen_size = self.screen_width, self.screen_height = SCREEN_SIZE
 
-        self.screen = pygame.display.get_surface()
+        pygame.display.set_caption(WINDOW_TITLE)
+
+        self.screen = pygame.display.set_mode(SCREEN_SIZE, DISPLAY_FLAGS)
         self.screen_rect = self.screen.get_rect()
 
+        self.is_fullscreen = False
+
         self.screen.set_alpha(None)  # possible performance improvement, remove if troube is caused
+
+        # assets loading
+        load_assets(self.screen_size)
 
         # ship
         self.ship = Ship(self)
@@ -61,6 +70,26 @@ class Game:
             self.scene.cleanup()
         self.scene = scene
 
+    def pause_game(self):
+        if self.is_paused or self.ship.health <= 0:
+            return
+
+        self.is_paused = True
+        self.switch_scene(PauseScene(self, self.scene), scene_cleanup=False)
+
+    def toggle_fullscreen(self):  # TODO: FIXME
+        if self.is_fullscreen:
+            flags = DISPLAY_FLAGS
+            # self.screen_size = self.screen_width, self.screen_height = SCREEN_SIZE
+        else:
+            flags = DISPLAY_FLAGS | pygame.HWSURFACE | pygame.FULLSCREEN
+            # self.screen_size = self.screen_width, self.screen_height = self.display_info.current_w, self.display_info.current_h
+
+        self.screen = pygame.display.set_mode(self.screen_size, flags)
+        self.screen_rect = self.screen.get_rect()
+
+        self.is_fullscreen = not self.is_fullscreen
+
     def mainloop(self):
         running = True
         while running:
@@ -80,9 +109,12 @@ class Game:
                     self.pressed_keys[event.key] = True
 
                     if event.key == pygame.K_ESCAPE and not self.is_paused:
-                        self.is_paused = True
-                        self.switch_scene(PauseScene(self, self.scene), scene_cleanup=False)
+                        self.pause_game()
                         continue  # we don't want the pause scene to catch this event
+
+                    elif event.key == pygame.K_F11:
+                        self.pause_game()
+                        self.toggle_fullscreen()
 
                 elif event.type == DEATH_EVENT:
                     self.switch_scene(DeathScene(self, self.scene), scene_cleanup=False)
@@ -153,13 +185,9 @@ def main():
         os.environ["SDL_VIDEO_CENTERED"] = "1"  # place the game window at the center of the screen
         status = pygame.init()
         log.info(f"Pygame init status {status}")
-
-        pygame.display.set_caption(WINDOW_TITLE)
-        pygame.display.set_mode(SCREEN_SIZE, pygame.DOUBLEBUF)
+        log.info(f"SDL version: {(pygame.get_sdl_version())}")
 
         try:
-            load_assets(SCREEN_SIZE)
-
             game = Game(timeout=args.timeout)
             game.mainloop()
         except Exception:

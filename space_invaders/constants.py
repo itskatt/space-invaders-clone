@@ -21,6 +21,9 @@ BASE_SCREEN_SIZE = (800, 450)  # 16:9
 SCREEN_SIZE = tuple([round(val * 1.5) for val in BASE_SCREEN_SIZE])
 WINDOW_TITLE = "Space Invaders"
 
+# display flags
+DISPLAY_FLAGS = pygame.DOUBLEBUF
+
 # misc
 BG_SCROOL_SPEED = 1 * SCREEN_SIZE[1] / BASE_SCREEN_SIZE[1]
 PAUSE_TEXT_BLINK_SPEED = 5

@@ -74,7 +74,7 @@ class PlaylessScene(BaseScene):  # TODO: find a better name
         elif self.opacity >= 255:
             self.op = operator.sub
 
-    def clear_screen(self):
+    def clear_screen(self):  # TODO: change
         self.screen.blit(self.dark_screen, (0, 0))
 
     def draw(self):
