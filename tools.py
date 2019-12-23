@@ -1,11 +1,11 @@
 # tools script
+import glob
 import os
 import shutil
 import subprocess
 import sys
 
 import snakeviz.cli
-
 
 if len(sys.argv) == 1:
     sys.exit("No args provided !")
@@ -24,3 +24,5 @@ elif sys.argv[1] == "clean":
     shutil.rmtree("build")
     shutil.rmtree("dist")
     os.remove("spaceinv.spec")
+    for path in glob.iglob("**/__pycache__", recursive=True):
+        shutil.rmtree(path)
