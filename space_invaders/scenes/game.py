@@ -109,8 +109,7 @@ class MainScene(GameScene):
         health_txt = font.render(f"Health: {health}", False, BLACK)
         health_rect = health_txt.get_rect(center=(centerx, round(height / 4 * 2.5)))
 
-        bg.blit(score, score_rect)
-        bg.blit(health_txt, health_rect)
+        bg.blits(((score, score_rect), (health_txt, health_rect)))
 
         linew = round(height / 13)
         pygame.draw.line(

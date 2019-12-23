@@ -120,19 +120,19 @@ class WelcomeScene(MenuSceneNoContext):
         play_text = self.get_text("Press ENTER to play", FONT_SIZE, opacity=self.opacity)
         play_txt_rect = play_text.get_rect(center=(self.screen_rect.center))
 
-        self.screen.blit(main_text, main_txt_rect)
-        self.screen.blit(play_text, play_txt_rect)
+        self.screen.blits(((main_text, main_txt_rect), (play_text, play_txt_rect)))
 
         main_txt_rect.inflate_ip(main_txt_rect.width * 1.5, 0)
         self.to_update.extend([main_txt_rect, play_txt_rect])
 
 
 class MenuSceneContext(MenuScene):
-    def __init__(self, game, text, last_scene):
+    def __init__(self, game, text, bottom_text, last_scene):
         super().__init__(game)
 
         self.last_scene = last_scene
         self.text = text
+        self.bottom_text = bottom_text
 
         # create the darkened screen
         screen = pygame.Surface(game.screen_size)
@@ -154,14 +154,20 @@ class MenuSceneContext(MenuScene):
     def draw(self):
         text = self.get_text(self.text, FONT_SIZE * 2, opacity=self.opacity)
         text_rect = text.get_rect(center=(self.screen_rect.center))
-        self.screen.blit(text, text_rect)
 
-        self.to_update.append(text_rect)
+        bottom_text = self.get_text(self.bottom_text, FONT_SIZE / 1.5, opacity=self.opacity / 1.5)
+        rect = bottom_text.get_rect(center=(
+            self.screen_rect.center[0],
+            self.screen_rect.center[1] + FONT_SIZE * 3  # kinda hacky imo, might change later
+        ))
+        self.screen.blits(((text, text_rect), (bottom_text, rect)))
+
+        self.to_update.extend([text_rect, rect])
 
 
 class PauseScene(MenuSceneContext):
     def __init__(self, game, last_scene):
-        super().__init__(game, "Paused", last_scene)
+        super().__init__(game, "Paused", "(press ESCAPE to unpause)", last_scene)
 
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -172,21 +178,9 @@ class PauseScene(MenuSceneContext):
 
 class DeathScene(MenuSceneContext):
     def __init__(self, game, last_scene):
-        super().__init__(game, "You died", last_scene)
+        super().__init__(game, "You died", "Press R to restart", last_scene)
 
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == RESTART_KEY:
                 self.game.start_new_game()
-
-    def draw(self):
-        super().draw()
-
-        text = self.get_text("Press R to restart", FONT_SIZE / 1.5, opacity=self.opacity / 1.5)
-        rect = text.get_rect(center=(
-            self.screen_rect.center[0],
-            self.screen_rect.center[1] + FONT_SIZE * 3  # kinda hacky, might change later
-        ))
-        self.screen.blit(text, rect)
-
-        self.to_update.append(rect)
