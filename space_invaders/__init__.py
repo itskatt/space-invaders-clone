@@ -41,7 +41,7 @@ class Game:
 
         self.screen.set_alpha(None)  # possible performance improvement, remove if troube is caused
 
-        # assets loading
+        # load the assets
         load_assets(self.screen_size)
 
         # time
