@@ -63,13 +63,20 @@ class Game:
         for event in BLOCKED_EVENTS:
             pygame.event.set_blocked(event)
 
-        # scene + init
+        # scene
         self.scene = MainScene(self)
 
     def switch_scene(self, scene, *, scene_cleanup=True):
         if scene_cleanup:
             self.scene.cleanup()
         self.scene = scene
+
+    def restart_game(self):
+        # reset vars
+        self.ship = Ship(self)
+        self.score = 0
+
+        self.switch_scene(MainScene(self))
 
     def pause_game(self):
         if self.is_paused or self.ship.health <= 0:

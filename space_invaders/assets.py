@@ -38,6 +38,7 @@ def get_sprite(name):
 
 
 def get_font(name, size):
+    size = round(size)
     try:
         return _cache["fonts"][name][size]
     except KeyError:

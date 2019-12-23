@@ -3,7 +3,7 @@ import operator
 import pygame
 
 from ..assets import pixeled
-from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE, PAUSE_KEY
+from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE, PAUSE_KEY, RESTART_KEY
 
 
 class BaseScene:
@@ -110,6 +110,23 @@ class PauseScene(PlaylessScene):
                 self.game.switch_scene(self.last_scene)
 
 
-class DeathScene(PlaylessScene):  # TODO: press r to restart
+class DeathScene(PlaylessScene):
     def __init__(self, game, last_scene):
         super().__init__(game, "You died", last_scene)
+
+    def process_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == RESTART_KEY:
+                self.game.restart_game()
+
+    def draw(self):
+        super().draw()
+
+        text = self.get_text("Press R to restart", FONT_SIZE / 1.5, self.opacity / 1.5)
+        rect = text.get_rect(center=(
+            self.screen_rect.center[0],
+            self.screen_rect.center[1] + FONT_SIZE * 3  # kinda hacky, might change later
+        ))
+        self.screen.blit(text, rect)
+
+        self.to_update.append(rect)
