@@ -50,7 +50,7 @@ SHIP_SPAWN_EVENT = pygame.USEREVENT + 1
 DEATH_EVENT = pygame.USEREVENT + 2
 
 # blocked events
-BLOCKED_EVENTS = [  # events not in use blocked for performance
+BLOCKED_EVENTS = [  # events not in use, blocked for performance
     pygame.MOUSEBUTTONDOWN,
     pygame.MOUSEBUTTONUP,
     pygame.MOUSEMOTION,
