@@ -10,7 +10,7 @@ from contextlib import contextmanager
 import pygame
 
 from .assets import load_assets
-from .constants import BLOCKED_EVENTS, DEATH_EVENT, SCREEN_SIZE, WINDOW_TITLE
+from .constants import BLOCKED_EVENTS, DEATH_EVENT, SCREEN_SIZE, WINDOW_TITLE, DIR
 from .scenes import DeathScene, PauseScene
 from .scenes.main import MainScene
 from .ships import Ship
@@ -166,7 +166,7 @@ def main():
             log.exception("An exception occured:")
 
             if not args.no_reports:
-                with open(f"crash_{round(time.time())}.txt", "w", encoding="utf=8") as f:
+                with open(DIR / f"crash_{round(time.time())}.txt", "w", encoding="utf=8") as f:
                     traceback.print_exc(file=f)
                     log.info("Created crash report")
 

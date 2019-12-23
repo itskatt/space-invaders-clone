@@ -4,13 +4,16 @@ import sys
 import pygame
 
 
-# pyinstaller and paths
+# pyinstaller
 PYINSTALLER = getattr(sys, "frozen", False)
 
+# paths
 if PYINSTALLER:
-    ASSETS_DIR = pathlib.Path(getattr(sys, "_MEIPASS")) / "assets"
+    DIR = pathlib.Path(getattr(sys, "_MEIPASS"))
 else:
-    ASSETS_DIR = pathlib.Path(__file__).parents[0] / "assets"
+    DIR = pathlib.Path(__file__).parents[0]
+
+ASSETS_DIR = DIR / "assets"
 
 # window
 BASE_SCREEN_SIZE = (800, 450)  # 16:9
