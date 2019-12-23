@@ -37,6 +37,21 @@ class MenuScene(BaseScene):
 
         self.to_update = []
 
+    def get_text(self, text, size, opacity=255):
+        font = pixeled(size)
+
+        rendered_text = font.render(text, True, WHITE)
+
+        if opacity != 255:
+            surf = pygame.Surface(rendered_text.get_size())
+            surf.blit(rendered_text, (0, 0))
+            surf.set_colorkey(BLACK)
+            surf.set_alpha(opacity)
+        else:
+            surf = rendered_text
+
+        return surf
+
     def update_screen(self):
         pygame.display.update(self.to_update)
         self.to_update.clear()
@@ -70,21 +85,6 @@ class ContextualisedMenuScene(MenuScene):  # Here too
         self.to_update.append(self.screen_rect)
 
         self.dark_screen = self.screen.copy()
-
-    def get_text(self, text, size, opacity):
-        font = pixeled(size)
-
-        rendered_text = font.render(text, True, WHITE)
-
-        if opacity != 255:
-            surf = pygame.Surface(rendered_text.get_size())
-            surf.blit(rendered_text, (0, 0))
-            surf.set_colorkey(BLACK)
-            surf.set_alpha(opacity)
-        else:
-            surf = rendered_text
-
-        return surf
 
     def update(self):
         self.opacity = self.op(self.opacity, PAUSE_TEXT_BLINK_SPEED)
