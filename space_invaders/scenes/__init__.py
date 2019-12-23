@@ -3,7 +3,7 @@ import operator
 import pygame
 
 from ..assets import pixeled
-from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE, PAUSE_KEY, RESTART_KEY
+from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE, PAUSE_KEY, RESTART_KEY, WINDOW_TITLE
 
 
 class BaseScene:
@@ -35,9 +35,14 @@ class MenuScene(BaseScene):
     def __init__(self, game):
         super().__init__(game)
 
+        # opactity changing effect
+        self.opacity = 255
+        self.op = operator.sub
+
+        # regions to update
         self.to_update = []
 
-    def get_text(self, text, size, opacity=255):
+    def get_text(self, text, size, color=WHITE, opacity=255):
         font = pixeled(size)
 
         rendered_text = font.render(text, True, WHITE)
@@ -52,6 +57,14 @@ class MenuScene(BaseScene):
 
         return surf
 
+    def update(self):
+        self.opacity = self.op(self.opacity, PAUSE_TEXT_BLINK_SPEED)
+
+        if self.opacity <= 50:
+            self.op = operator.add
+        elif self.opacity >= 255:
+            self.op = operator.sub
+
     def update_screen(self):
         pygame.display.update(self.to_update)
         self.to_update.clear()
@@ -62,7 +75,30 @@ class MenuSceneNoContext(MenuScene):
 
 
 class WelcomeScene(MenuSceneNoContext):
-    pass
+    def process_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            self.game.start_new_game()
+
+    def clear_screen(self):
+        if self.to_update:
+            for update in self.to_update:
+                self.screen.fill(BLACK, update)
+        else:
+            self.screen.fill(BLACK)
+
+    def draw(self):
+        main_text = self.get_text(WINDOW_TITLE, FONT_SIZE * 3)
+        main_txt_rect = main_text.get_rect(center=(
+            self.screen_rect.center[0],
+            self.screen_rect.center[1] / 3
+        ))
+        play_text = self.get_text("Press any key to play", FONT_SIZE, opacity=self.opacity)
+        play_txt_rect = play_text.get_rect(center=(self.screen_rect.center))
+
+        self.screen.blit(main_text, main_txt_rect)
+        self.screen.blit(play_text, play_txt_rect)
+
+        self.to_update.extend([main_txt_rect, play_txt_rect])
 
 
 class MenuSceneContext(MenuScene):
@@ -71,10 +107,6 @@ class MenuSceneContext(MenuScene):
 
         self.last_scene = last_scene
         self.text = text
-
-        # opactity changing effect
-        self.opacity = 255
-        self.op = operator.sub
 
         # create the darkened screen
         screen = pygame.Surface(game.screen_size)
@@ -86,14 +118,6 @@ class MenuSceneContext(MenuScene):
 
         self.dark_screen = self.screen.copy()
 
-    def update(self):
-        self.opacity = self.op(self.opacity, PAUSE_TEXT_BLINK_SPEED)
-
-        if self.opacity <= 50:
-            self.op = operator.add
-        elif self.opacity >= 255:
-            self.op = operator.sub
-
     def clear_screen(self):
         if self.to_update:
             for update in self.to_update:
@@ -102,7 +126,7 @@ class MenuSceneContext(MenuScene):
             self.screen.blit(self.dark_screen, (0, 0))
 
     def draw(self):
-        text = self.get_text(self.text, FONT_SIZE * 2, self.opacity)
+        text = self.get_text(self.text, FONT_SIZE * 2, opacity=self.opacity)
         text_rect = text.get_rect(center=(self.screen_rect.center))
         self.screen.blit(text, text_rect)
 
@@ -127,12 +151,12 @@ class DeathScene(MenuSceneContext):
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == RESTART_KEY:
-                self.game.restart_game()
+                self.game.start_new_game()
 
     def draw(self):
         super().draw()
 
-        text = self.get_text("Press R to restart", FONT_SIZE / 1.5, self.opacity / 1.5)
+        text = self.get_text("Press R to restart", FONT_SIZE / 1.5, opacity=self.opacity / 1.5)
         rect = text.get_rect(center=(
             self.screen_rect.center[0],
             self.screen_rect.center[1] + FONT_SIZE * 3  # kinda hacky, might change later

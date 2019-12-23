@@ -12,7 +12,7 @@ import pygame
 from .assets import load_assets
 from .constants import (BLOCKED_EVENTS, DEATH_EVENT, DIR, DISPLAY_FLAGS,
                         FULLSCREEN_KEY, PAUSE_KEY, SCREEN_SIZE, WINDOW_TITLE)
-from .scenes import DeathScene, PauseScene
+from .scenes import DeathScene, PauseScene, WelcomeScene, MenuScene
 from .scenes.game import MainScene
 from .ships import Ship
 
@@ -44,10 +44,6 @@ class Game:
         # assets loading
         load_assets(self.screen_size)
 
-        # ship
-        self.ship = Ship(self)
-        self.score = 0
-
         # time
         self.clock = pygame.time.Clock()
 
@@ -64,14 +60,14 @@ class Game:
             pygame.event.set_blocked(event)
 
         # scene
-        self.scene = MainScene(self)
+        self.scene = WelcomeScene(self)
 
     def switch_scene(self, scene, *, scene_cleanup=True):
         if scene_cleanup:
             self.scene.cleanup()
         self.scene = scene
 
-    def restart_game(self):
+    def start_new_game(self):
         # reset vars
         self.ship = Ship(self)
         self.score = 0
@@ -79,7 +75,7 @@ class Game:
         self.switch_scene(MainScene(self))
 
     def pause_game(self):
-        if self.is_paused or self.ship.health <= 0:
+        if self.is_paused or self.ship.health <= 0 or isinstance(self.scene, MenuScene):
             return
 
         self.is_paused = True
