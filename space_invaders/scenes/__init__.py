@@ -1,3 +1,4 @@
+import functools
 import operator
 
 import pygame
@@ -97,13 +98,20 @@ class WelcomeScene(MenuSceneNoContext):
         else:
             self.screen.fill(BLACK)
 
-    def draw(self):
-        # TODO: see if there is a less cpu hungry solution, if it really matters
+    def cleanup(self):
+        self.get_main_text.cache_clear()
+
+    @functools.lru_cache()
+    def get_main_text(self, size_mod):
         main_text = self.get_text(WINDOW_TITLE, (FONT_SIZE * 4))
         main_text = pygame.transform.smoothscale(main_text, (
-            round(main_text.get_width() * (self.size_mod / 100)),
-            round(main_text.get_height() * (self.size_mod / 100))
+            round(main_text.get_width() * (size_mod / 100)),
+            round(main_text.get_height() * (size_mod / 100))
         ))
+        return main_text
+
+    def draw(self):
+        main_text = self.get_main_text(self.size_mod)
         main_txt_rect = main_text.get_rect(center=(
             self.screen_rect.center[0],
             self.screen_rect.center[1] / 2.5
