@@ -1,11 +1,10 @@
-# tools 
+# tools script
 import os
 import shutil
 import subprocess
 import sys
 
 import snakeviz.cli
-
 
 
 if len(sys.argv) == 1:
