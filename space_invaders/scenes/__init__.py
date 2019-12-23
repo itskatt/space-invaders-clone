@@ -57,15 +57,15 @@ class MenuScene(BaseScene):
         self.to_update.clear()
 
 
-class UncontextualisedMenuScene(MenuScene):  # ouch, thats a long name
+class MenuSceneNoContext(MenuScene):
     pass
 
 
-class WelcomeScene(UncontextualisedMenuScene):
+class WelcomeScene(MenuSceneNoContext):
     pass
 
 
-class ContextualisedMenuScene(MenuScene):  # Here too
+class MenuSceneContext(MenuScene):
     def __init__(self, game, text, last_scene):
         super().__init__(game)
 
@@ -109,7 +109,7 @@ class ContextualisedMenuScene(MenuScene):  # Here too
         self.to_update.append(text_rect)
 
 
-class PauseScene(ContextualisedMenuScene):
+class PauseScene(MenuSceneContext):
     def __init__(self, game, last_scene):
         super().__init__(game, "Paused", last_scene)
 
@@ -120,7 +120,7 @@ class PauseScene(ContextualisedMenuScene):
                 self.game.switch_scene(self.last_scene)
 
 
-class DeathScene(ContextualisedMenuScene):
+class DeathScene(MenuSceneContext):
     def __init__(self, game, last_scene):
         super().__init__(game, "You died", last_scene)
 
