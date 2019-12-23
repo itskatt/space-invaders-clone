@@ -51,6 +51,8 @@ class MainScene(GameScene):
     def cleanup(self):
         for obj in self.objects:
             obj.empty()
+        self._get_status_box.cache_clear()
+        self._get_fps_text.cache_clear()
         pygame.time.set_timer(SHIP_SPAWN_EVENT, 0)  # disable the timer
 
     def process_event(self, event):
@@ -128,7 +130,7 @@ class MainScene(GameScene):
             self.game.screen_height - bg.get_height()
         ))
 
-    @functools.lru_cache(5)
+    @functools.lru_cache(4)
     def _get_fps_text(self, fps):
         font = pixeled(round(FONT_SIZE / 2))
         fps_text = font.render(f"FPS: {round(fps)}", False, WHITE)
