@@ -31,21 +31,35 @@ class BaseScene:
         pygame.display.flip()
 
 
-class GameScene(BaseScene):
+class MenuScene(BaseScene):
+    def __init__(self, game):
+        super().__init__(game)
+
+        self.to_update = []
+
+    def update_screen(self):
+        pygame.display.update(self.to_update)
+        self.to_update.clear()
+
+
+class UncontextualisedMenuScene(MenuScene):  # ouch, thats a long name
     pass
 
 
-class PlaylessScene(BaseScene):  # TODO: find a better name
+class WelcomeScene(UncontextualisedMenuScene):
+    pass
+
+
+class ContextualisedMenuScene(MenuScene):  # Here too
     def __init__(self, game, text, last_scene):
         super().__init__(game)
 
         self.last_scene = last_scene
         self.text = text
 
+        # opactity changing effect
         self.opacity = 255
         self.op = operator.sub
-
-        self.to_update = []
 
         # create the darkened screen
         screen = pygame.Surface(game.screen_size)
@@ -94,12 +108,8 @@ class PlaylessScene(BaseScene):  # TODO: find a better name
 
         self.to_update.append(text_rect)
 
-    def update_screen(self):
-        pygame.display.update(self.to_update)
-        self.to_update.clear()
 
-
-class PauseScene(PlaylessScene):
+class PauseScene(ContextualisedMenuScene):
     def __init__(self, game, last_scene):
         super().__init__(game, "Paused", last_scene)
 
@@ -110,7 +120,7 @@ class PauseScene(PlaylessScene):
                 self.game.switch_scene(self.last_scene)
 
 
-class DeathScene(PlaylessScene):
+class DeathScene(ContextualisedMenuScene):
     def __init__(self, game, last_scene):
         super().__init__(game, "You died", last_scene)
 

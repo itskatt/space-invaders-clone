@@ -13,7 +13,7 @@ from .assets import load_assets
 from .constants import (BLOCKED_EVENTS, DEATH_EVENT, DIR, DISPLAY_FLAGS,
                         FULLSCREEN_KEY, PAUSE_KEY, SCREEN_SIZE, WINDOW_TITLE)
 from .scenes import DeathScene, PauseScene
-from .scenes.main import MainScene
+from .scenes.game import MainScene
 from .ships import Ship
 
 log = logging.getLogger(__name__)
