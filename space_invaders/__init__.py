@@ -50,6 +50,8 @@ class Game:
         self.loop_time = time.time()
         self.start_time = self.loop_time
 
+        self.delta = 1 / self.FPS  # theorical value
+
         self.is_paused = False
 
         # keys
@@ -137,7 +139,7 @@ class Game:
                 sys.exit()
 
             # tick-tock-tick-tock-tick-tock
-            self.clock.tick(self.FPS)
+            self.delta = self.clock.tick(self.FPS) / 1000  # see: https://gafferongames.com/post/fix_your_timestep/
 
 
 @contextmanager
