@@ -10,7 +10,8 @@ from contextlib import contextmanager
 import pygame
 
 from .assets import load_assets
-from .constants import BLOCKED_EVENTS, DEATH_EVENT, SCREEN_SIZE, WINDOW_TITLE, DIR, DISPLAY_FLAGS
+from .constants import (BLOCKED_EVENTS, DEATH_EVENT, DIR, DISPLAY_FLAGS,
+                        FULLSCREEN_KEY, PAUSE_KEY, SCREEN_SIZE, WINDOW_TITLE)
 from .scenes import DeathScene, PauseScene
 from .scenes.main import MainScene
 from .ships import Ship
@@ -108,11 +109,11 @@ class Game:
                 elif event.type == pygame.KEYDOWN:
                     self.pressed_keys[event.key] = True
 
-                    if event.key == pygame.K_ESCAPE and not self.is_paused:
+                    if event.key == PAUSE_KEY and not self.is_paused:
                         self.pause_game()
                         continue  # we don't want the pause scene to catch this event
 
-                    elif event.key == pygame.K_F11:
+                    elif event.key == FULLSCREEN_KEY:
                         self.pause_game()
                         self.toggle_fullscreen()
 

@@ -6,7 +6,7 @@ from .assets import get_sprite
 from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
                         ENEMI_SHIP_NO_SHOOT_TIME, ENEMI_SHIP_SHOOT_INTERVAL,
                         ENEMI_SHIP_SPEED, RED, SHIP_HEALTH, SHIP_SPAWN_EVENT,
-                        SHIP_SPEED)
+                        SHIP_SPEED, SHOOT_KEY, RIGHT_MOVEMENT_KEYS, LEFT_MOVEMENT_KEYS)
 from .lasers import EnemiLaser, Laser
 
 
@@ -47,16 +47,13 @@ class Ship(BaseShip):
         ])
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.left_keys = [pygame.K_LEFT, pygame.K_a]
-        self.right_keys = [pygame.K_RIGHT, pygame.K_d]
-
         self.health = SHIP_HEALTH
 
     def get_event(self, event):
         if event.type == pygame.KEYDOWN:
             key = event.key
 
-            if key == pygame.K_SPACE:  # fire
+            if key == SHOOT_KEY:  # fire
                 self.fire()
 
     def fire(self):
@@ -71,11 +68,11 @@ class Ship(BaseShip):
 
     def update(self):
         # lets try moving the ship
-        if any([self.game.pressed_keys[key] for key in self.left_keys]):
+        if any([self.game.pressed_keys[key] for key in LEFT_MOVEMENT_KEYS]):
             if not self.rect.topleft[0] < 0:
                 self.rect.x -= self.speed
 
-        elif any([self.game.pressed_keys[key] for key in self.right_keys]):
+        elif any([self.game.pressed_keys[key] for key in RIGHT_MOVEMENT_KEYS]):
             if not self.rect.topright[0] > self.game.screen_width:
                 self.rect.x += self.speed
 

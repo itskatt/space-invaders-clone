@@ -3,7 +3,7 @@ import operator
 import pygame
 
 from ..assets import pixeled
-from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE
+from ..constants import BLACK, FONT_SIZE, PAUSE_TEXT_BLINK_SPEED, WHITE, PAUSE_KEY
 
 
 class BaseScene:
@@ -105,7 +105,7 @@ class PauseScene(PlaylessScene):
 
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE and self.game.is_paused:
+            if event.key == PAUSE_KEY and self.game.is_paused:
                 self.game.is_paused = False
                 self.game.switch_scene(self.last_scene)
 
