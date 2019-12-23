@@ -6,17 +6,20 @@
         {
             "label": "profile",
             "type": "shell",
-            "command": "python tools.py profile"
+            "command": "python tools.py profile",
+            "problemMatcher": []
         },
         {
             "label": "build",
             "type": "shell",
-            "command": "python tools.py build"
+            "command": "python tools.py build",
+            "problemMatcher": []
         },
         {
             "label": "clean",
             "type": "shell",
-            "command": "python tools.py clean"
+            "command": "python tools.py clean",
+            "problemMatcher": []
         }
     ]
 }
