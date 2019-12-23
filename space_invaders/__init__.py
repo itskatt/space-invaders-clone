@@ -75,7 +75,7 @@ class Game:
         self.switch_scene(MainScene(self))
 
     def pause_game(self):
-        if self.is_paused or self.ship.health <= 0 or isinstance(self.scene, MenuScene):
+        if self.is_paused or isinstance(self.scene, MenuScene):
             return
 
         self.is_paused = True
@@ -197,7 +197,7 @@ def main():
         except Exception:
             log.exception("An exception occured:")
 
-            if not args.no_reports:
+            if not args.no_reports:  # TODO: save to a different path
                 with open(DIR / f"crash_{round(time.time())}.txt", "w", encoding="utf=8") as f:
                     traceback.print_exc(file=f)
                     log.info("Created crash report")

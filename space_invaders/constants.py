@@ -69,6 +69,7 @@ PAUSE_KEY = pygame.K_ESCAPE
 FULLSCREEN_KEY = pygame.K_F11
 SHOOT_KEY = pygame.K_SPACE
 RESTART_KEY = pygame.K_r
+START_KEY = pygame.K_RETURN
 
 LEFT_MOVEMENT_KEYS = [pygame.K_LEFT, pygame.K_a]
 RIGHT_MOVEMENT_KEYS = [pygame.K_RIGHT, pygame.K_d]

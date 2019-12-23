@@ -4,7 +4,7 @@ import operator
 import pygame
 
 from ..assets import pixeled
-from ..constants import (BLACK, FONT_SIZE, PAUSE_KEY, RESTART_KEY,
+from ..constants import (BLACK, FONT_SIZE, PAUSE_KEY, RESTART_KEY, START_KEY,
                          TEXT_BLINK_SPEED, TEXT_RESIZE_SPEED, WHITE,
                          WINDOW_TITLE)
 
@@ -72,9 +72,9 @@ class MenuScene(BaseScene):
             self.opacity_op = operator.sub
 
         self.size_mod = self.size_op(self.size_mod, TEXT_RESIZE_SPEED)
-        if self.size_mod <= 90:
+        if self.size_mod <= 85:
             self.size_op = operator.add
-        elif self.size_mod >= 110:
+        elif self.size_mod >= 105:
             self.size_op = operator.sub
 
     def update_screen(self):
@@ -89,7 +89,8 @@ class MenuSceneNoContext(MenuScene):
 class WelcomeScene(MenuSceneNoContext):
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:
-            self.game.start_new_game()
+            if event.key == START_KEY:
+                self.game.start_new_game()
 
     def clear_screen(self):
         if self.to_update:
@@ -99,10 +100,10 @@ class WelcomeScene(MenuSceneNoContext):
             self.screen.fill(BLACK)
 
     def cleanup(self):
-        self.get_main_text.cache_clear()
+        self._get_main_text.cache_clear()
 
     @functools.lru_cache()
-    def get_main_text(self, size_mod):
+    def _get_main_text(self, size_mod):
         main_text = self.get_text(WINDOW_TITLE, (FONT_SIZE * 4))
         main_text = pygame.transform.smoothscale(main_text, (
             round(main_text.get_width() * (size_mod / 100)),
@@ -111,12 +112,12 @@ class WelcomeScene(MenuSceneNoContext):
         return main_text
 
     def draw(self):
-        main_text = self.get_main_text(self.size_mod)
+        main_text = self._get_main_text(self.size_mod)
         main_txt_rect = main_text.get_rect(center=(
             self.screen_rect.center[0],
             self.screen_rect.center[1] / 2.5
         ))
-        play_text = self.get_text("Press any key to play", FONT_SIZE, opacity=self.opacity)
+        play_text = self.get_text("Press ENTER to play", FONT_SIZE, opacity=self.opacity)
         play_txt_rect = play_text.get_rect(center=(self.screen_rect.center))
 
         self.screen.blit(main_text, main_txt_rect)
