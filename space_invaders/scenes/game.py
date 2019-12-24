@@ -1,6 +1,7 @@
 import functools
 import math
 import random
+from itertools import chain
 
 import pygame
 
@@ -13,7 +14,7 @@ from . import BaseScene
 
 
 class GameScene(BaseScene):
-    pass
+    pass  # TODO: move some methods to this class
 
 
 class MainScene(GameScene):
@@ -78,14 +79,22 @@ class MainScene(GameScene):
         self.display_fps()
 
     def spawn_enemi_ships(self, count):
-        # this func is a mess
+        # define the spawn aera
         pad = round(self.game.screen_width / 20)
         spawn_aera = (
             self.game.screen_width - pad,
             round(self.game.screen_height / 11.25)
         )
-        xpositions = random.sample(range(pad, spawn_aera[0], math.ceil(spawn_aera[0] / count)), count)
-        for pos in xpositions:
+        # first avoid errors
+        possible_positions = range(pad, spawn_aera[0], math.ceil(spawn_aera[0] / count))
+        poss_pos_len = len(possible_positions)
+        q, r = divmod(count, poss_pos_len)
+        if q != 0:
+            counts = [poss_pos_len] * q + [r]
+        else:
+            counts = [r]
+        # now place the ships
+        for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
             self.enemi_ships.add(EnemiShip(
                 self.game, self,
                 (pos, spawn_aera[1]),
