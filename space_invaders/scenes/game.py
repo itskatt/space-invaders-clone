@@ -57,8 +57,8 @@ class MainScene(GameScene):
 
     def process_event(self, event):
         if event.type == SHIP_SPAWN_EVENT:
-            shift = round(self.get_difficulty())
-            self.spawn_enemi_ships(random.randint(1 + shift, round(3 + shift * 1.3)))
+            shift = round(self.get_difficulty())  # TODO: change
+            self.spawn_enemi_ships(random.randint(1 + shift, round(2 + shift * 1.1)), shift)
 
         self.ship.get_event(event)
 
@@ -78,10 +78,22 @@ class MainScene(GameScene):
         self.draw_status_box()
         self.display_fps()
 
-    def get_difficulty(self):
+    @functools.lru_cache(2)
+    def _get_difficulty(self, score):
         return (self.game.score ** 2) / 1000
 
-    def spawn_enemi_ships(self, count):
+    def get_difficulty(self):
+        return self._get_difficulty(self.game.score)
+
+    def can_spawn_ships(self, count, diff):
+        # TODO
+        return count
+
+    def spawn_enemi_ships(self, count, diff=0):
+        # check
+        count = self.can_spawn_ships(count, diff)
+        if not count:
+            return
         # define the spawn aera
         pad = round(self.game.screen_width / 20)
         spawn_aera = (

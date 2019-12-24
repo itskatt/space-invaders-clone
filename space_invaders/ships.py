@@ -1,3 +1,4 @@
+import math
 import random
 
 import pygame
@@ -5,8 +6,9 @@ import pygame
 from .assets import get_sprite
 from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
                         ENEMI_SHIP_NO_SHOOT_TIME, ENEMI_SHIP_SHOOT_INTERVAL,
-                        ENEMI_SHIP_SPEED, RED, SHIP_HEALTH, SHIP_SPAWN_EVENT,
-                        SHIP_SPEED, SHOOT_KEY, RIGHT_MOVEMENT_KEYS, LEFT_MOVEMENT_KEYS)
+                        ENEMI_SHIP_SPEED, LEFT_MOVEMENT_KEYS, RED,
+                        RIGHT_MOVEMENT_KEYS, SHIP_HEALTH, SHIP_SPAWN_EVENT,
+                        SHIP_SPEED, SHOOT_KEY)
 from .lasers import EnemiLaser, Laser
 
 
@@ -100,7 +102,7 @@ class EnemiShip(BaseShip):
         self.speed = ENEMI_SHIP_SPEED
         self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
 
-        self.health = random.randint(*ENEMI_SHIP_HEALTH)
+        self.health = random.randint(*ENEMI_SHIP_HEALTH) + math.ceil(self.scene.get_difficulty())  # TODO: change
         self.direction = direction
 
         self.last_shoot_time = self.game.loop_time + \
