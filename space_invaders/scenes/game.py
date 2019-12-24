@@ -23,7 +23,6 @@ class MainScene(GameScene):
 
         # shortcuts
         self.ship = game.ship
-        self.score = game.score
 
         # background
         self.bg_img = get_sprite("background")
@@ -58,7 +57,8 @@ class MainScene(GameScene):
 
     def process_event(self, event):
         if event.type == SHIP_SPAWN_EVENT:
-            self.spawn_enemi_ships(random.randint(2, 3))
+            shift = round(self.get_difficulty())
+            self.spawn_enemi_ships(random.randint(1 + shift, round(3 + shift * 1.3)))
 
         self.ship.get_event(event)
 
@@ -77,6 +77,9 @@ class MainScene(GameScene):
 
         self.draw_status_box()
         self.display_fps()
+
+    def get_difficulty(self):
+        return (self.game.score ** 2) / 1000
 
     def spawn_enemi_ships(self, count):
         # define the spawn aera

@@ -118,10 +118,6 @@ class EnemiShip(BaseShip):
 
         if self.health <= 0:
             self.game.score += 1
-
-            if not random.randint(0, 10):
-                pygame.event.post(pygame.event.Event(SHIP_SPAWN_EVENT))
-
             self.kill()
 
     def move(self):
