@@ -65,13 +65,13 @@ class MenuScene(BaseScene):
         return surf
 
     def update(self):
-        self.opacity = self.opacity_op(self.opacity, TEXT_BLINK_SPEED)
+        self.opacity = self.opacity_op(self.opacity, TEXT_BLINK_SPEED * self.game.delta)
         if self.opacity <= 50:
             self.opacity_op = operator.add
         elif self.opacity >= 255:
             self.opacity_op = operator.sub
 
-        self.size_mod = self.size_op(self.size_mod, TEXT_RESIZE_SPEED)
+        self.size_mod = self.size_op(self.size_mod, TEXT_RESIZE_SPEED * self.game.delta)
         if self.size_mod <= 85:
             self.size_op = operator.add
         elif self.size_mod >= 105:

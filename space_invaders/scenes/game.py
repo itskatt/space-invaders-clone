@@ -140,7 +140,7 @@ class MainScene(GameScene):
         self.game.screen.blit(fps_text, (0, 0))
 
     def draw_bg(self):
-        self.bg_img_y_pos += BG_SCROOL_SPEED
+        self.bg_img_y_pos += BG_SCROOL_SPEED * self.game.delta
         if self.bg_img_y_pos >= self.game.screen_height:
             self.bg_img_y_pos = self.game.screen_height - self.bg_img.get_height()
 

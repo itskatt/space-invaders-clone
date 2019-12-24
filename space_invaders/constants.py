@@ -24,7 +24,10 @@ WINDOW_TITLE = "Space Invaders"
 # display flags
 DISPLAY_FLAGS = pygame.DOUBLEBUF
 
-# misc
+# speed
+BASE_FPS = 60
+GAME_SPEED_INFLUENCER = 1000 / BASE_FPS # the higher, the slower
+
 BG_SCROOL_SPEED = 1 * SCREEN_SIZE[1] / BASE_SCREEN_SIZE[1]
 TEXT_BLINK_SPEED = 5
 TEXT_RESIZE_SPEED = 0.5

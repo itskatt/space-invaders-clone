@@ -10,9 +10,10 @@ from contextlib import contextmanager
 import pygame
 
 from .assets import load_assets
-from .constants import (BLOCKED_EVENTS, DEATH_EVENT, DIR, DISPLAY_FLAGS,
-                        FULLSCREEN_KEY, PAUSE_KEY, SCREEN_SIZE, WINDOW_TITLE)
-from .scenes import DeathScene, PauseScene, WelcomeScene, MenuScene
+from .constants import (BASE_FPS, BLOCKED_EVENTS, DEATH_EVENT, DIR,
+                        DISPLAY_FLAGS, FULLSCREEN_KEY, GAME_SPEED_INFLUENCER,
+                        PAUSE_KEY, SCREEN_SIZE, WINDOW_TITLE)
+from .scenes import DeathScene, MenuScene, PauseScene, WelcomeScene
 from .scenes.game import MainScene
 from .ships import Ship
 
@@ -22,8 +23,6 @@ log = logging.getLogger(__name__)
 
 
 class Game:
-    FPS = 60
-
     def __init__(self, *, timeout=None):
         self.timeout = timeout
 
@@ -50,7 +49,7 @@ class Game:
         self.loop_time = time.time()
         self.start_time = self.loop_time
 
-        self.delta = 1 / self.FPS  # theorical value
+        self.delta = 0  # will change after the first loop
 
         self.is_paused = False
 
@@ -138,8 +137,8 @@ class Game:
             if self.timeout and (self.loop_time - self.start_time) >= self.timeout:
                 sys.exit()
 
-            # tick-tock-tick-tock-tick-tock
-            self.delta = self.clock.tick(self.FPS) / 1000  # see: https://gafferongames.com/post/fix_your_timestep/
+            # tick-tock-tick-tock...
+            self.delta = self.clock.tick(BASE_FPS) / GAME_SPEED_INFLUENCER
 
 
 @contextmanager

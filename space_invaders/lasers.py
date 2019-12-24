@@ -38,7 +38,7 @@ class Laser(BaseLaser):
         self.image = get_sprite("laser")
 
     def _move(self):
-        self.rect.y = self.rect.y - self.speed
+        self.rect.y = self.rect.y - self.speed * self.game.delta
 
     def is_colliding(self):
         collisions = pygame.sprite.spritecollide(self, self.scene.enemi_ships, False)
@@ -53,7 +53,7 @@ class EnemiLaser(BaseLaser):
         self.image = get_sprite("enemi-laser")
 
     def _move(self):
-        self.rect.y = self.rect.y + self.speed
+        self.rect.y = self.rect.y + self.speed * self.game.delta
 
     def is_colliding(self):
         collision = pygame.sprite.spritecollide(self, [self.game.ship], False)

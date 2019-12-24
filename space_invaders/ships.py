@@ -70,11 +70,11 @@ class Ship(BaseShip):
         # lets try moving the ship
         if any([self.game.pressed_keys[key] for key in LEFT_MOVEMENT_KEYS]):
             if not self.rect.topleft[0] < 0:
-                self.rect.x -= self.speed
+                self.rect.x -= self.speed * self.game.delta
 
         elif any([self.game.pressed_keys[key] for key in RIGHT_MOVEMENT_KEYS]):
             if not self.rect.topright[0] > self.game.screen_width:
-                self.rect.x += self.speed
+                self.rect.x += self.speed * self.game.delta
 
         # can we remove the damage effect, if there is any
         if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
@@ -126,10 +126,10 @@ class EnemiShip(BaseShip):
 
     def move(self):
         if self.direction == 0:  # left
-            self.rect.x -= self.speed
+            self.rect.x -= self.speed * self.game.delta
 
         elif self.direction == 1:  # right
-            self.rect.x += self.speed
+            self.rect.x += self.speed * self.game.delta
 
     def update(self):
         # if self.is_sliding:
