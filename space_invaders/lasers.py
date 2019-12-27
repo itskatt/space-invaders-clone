@@ -1,12 +1,16 @@
 import pygame
 
 from .assets import get_sprite
-from .constants import (AUTO_LASER_DAMAGE, BASIC_LASER_DAMAGE, BASE_LASER_SPEED,
-                        WHITE)
+from .constants import (AUTO_LASER_DAMAGE, BASE_LASER_SPEED,
+                        BASIC_LASER_DAMAGE, WHITE)
+
+
+class BaseLaserTeam:
+    pass
 
 
 def get_friendly_laser(laser):
-    class FriendlyLaser(laser):
+    class FriendlyLaser(laser, BaseLaserTeam):
         def _move(self):
             self.rect.y = self.rect.y - self.speed * self.game.delta
 
@@ -19,8 +23,9 @@ def get_friendly_laser(laser):
 
     return FriendlyLaser
 
+
 def get_enemi_laser(laser):
-    class EnemiLaser(laser):
+    class EnemiLaser(laser, BaseLaserTeam):
         def _get_image_name(self):
             return "enemi-" + super()._get_image_name()
 
@@ -82,6 +87,7 @@ class BasicLaser(BaseLaser):
 
     def _get_image_name(self):
         return "basic-laser"
+
 
 class AutoLaser(BaseLaser):
     damage = AUTO_LASER_DAMAGE
