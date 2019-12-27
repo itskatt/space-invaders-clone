@@ -1,4 +1,3 @@
-import math
 import random
 
 import pygame
@@ -85,40 +84,30 @@ class Ship(BaseShip):
         surface.blit(self.image, self.rect)
 
 
-class EnemiShip(BaseShip):
-    def __init__(self, game, scene, original_x_position, direction):
+class BaseEnemiShip(BaseShip):
+    def __init__(self, game, scene, original_x_position):
         super().__init__(game)
-
         self.scene = scene
 
         self.normal_img = pygame.transform.rotate(
-            get_sprite("enemi-ship"), 180)  # TODO: change
+            get_sprite(self._get_image_name()), 180)  # TODO: change?
         self.damaged_img = get_damaged(self.normal_img)
 
         self.image = self.normal_img
         self.rect = self.image.get_rect(midbottom=(original_x_position, 0))
-
-        self.speed = ENEMI_SHIP_SPEED
-        self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
-
-        self.health = random.randint(*ENEMI_SHIP_HEALTH) + math.ceil(self.scene.get_difficulty())  # TODO: change
-        self.direction = direction
+        
+        self.direction = random.randint(0, 1)
+        
+        self.health = 0
+        self.awarded_points = 1
 
         self.last_shoot_time = self.game.loop_time
 
-        # self.is_sliding = False
+    def _get_image_name(self):
+        raise NotImplementedError
 
     def fire(self):
-        self.scene.lasers.add(AutoLaser.create(self.game, self.scene, self.rect.midbottom, True))
-
-    def on_collision(self, damage):
-        self.health -= damage
-        self.image = self.damaged_img
-        self.last_hit_time = self.game.loop_time
-
-        if self.health <= 0:
-            self.game.score += 1
-            self.kill()
+        raise NotImplementedError
 
     def move(self):
         if self.direction == 0:  # left
@@ -126,6 +115,15 @@ class EnemiShip(BaseShip):
 
         elif self.direction == 1:  # right
             self.rect.x += self.speed * self.game.delta
+
+    def on_collision(self, damage):
+        self.health -= damage
+        self.image = self.damaged_img
+        self.last_hit_time = self.game.loop_time
+
+        if self.health <= 0:
+            self.game.score += self.awarded_points
+            self.kill()
 
     def update(self):
         # if self.is_sliding:
@@ -163,3 +161,21 @@ class EnemiShip(BaseShip):
         #         if not 0 <= self.rect.x >= self.game.screen_width:
         #             self.is_sliding = True
         #             self.move()
+
+
+class EnemiShip(BaseEnemiShip):
+    def __init__(self, game, scene, original_x_position):
+        super().__init__(game, scene, original_x_position)
+
+        self.speed = ENEMI_SHIP_SPEED
+        self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
+
+        self.health = random.randint(*ENEMI_SHIP_HEALTH)
+
+        # self.is_sliding = False
+
+    def _get_image_name(self):
+        return "enemi-ship"
+
+    def fire(self):
+        self.scene.lasers.add(AutoLaser.create(self.game, self.scene, self.rect.midbottom, True))

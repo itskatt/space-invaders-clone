@@ -116,10 +116,7 @@ class MainScene(GameScene):
             counts = [r]
         # now place the ships
         for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
-            self.enemi_ships.add(EnemiShip(
-                self.game, self,
-                pos, random.choice((0, 1))
-            ))
+            self.enemi_ships.add(EnemiShip(self.game, self, pos))
 
     @functools.lru_cache(1)  # TODO: change probably ?
     def _get_status_box(self, score, health):
