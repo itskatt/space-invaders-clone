@@ -68,7 +68,17 @@ class MainScene(GameScene):
             obj.update()
 
     def clear_screen(self):
-        self.draw_bg()  # also clears off the screen
+        self.bg_img_y_pos += BG_SCROOL_SPEED * self.game.delta
+        if self.bg_img_y_pos >= self.game.screen_height:
+            self.bg_img_y_pos = self.game.screen_height - self.bg_img.get_height()
+
+        self.bg_rect.y = self.bg_img_y_pos
+
+        if self.bg_rect.y > 0:
+            self.game.screen.blit(self.bg_img, (0, self.bg_rect.y - self.game.screen_height))
+
+        # sub = self.bg_img.subsurface((0, 0), self.screen_size)  TODO: subsurface?
+        self.game.screen.blit(self.bg_img, self.bg_rect)
 
     def draw(self):
         self.ship.draw(self.screen)
@@ -82,7 +92,7 @@ class MainScene(GameScene):
     def _get_difficulty(self, score):
         return (self.game.score ** 2) / 1000
 
-    def get_difficulty(self):
+    def get_difficulty(self):  # TODO: change
         return self._get_difficulty(self.game.score)
 
     def can_spawn_ships(self, count, diff):
@@ -96,12 +106,9 @@ class MainScene(GameScene):
             return
         # define the spawn aera
         pad = round(self.game.screen_width / 20)
-        spawn_aera = (
-            self.game.screen_width - pad,
-            round(self.game.screen_height / 11.25)
-        )
+        spawn_aera = self.game.screen_width - pad
         # first avoid errors
-        possible_positions = range(pad, spawn_aera[0], math.ceil(spawn_aera[0] / count))
+        possible_positions = range(pad, spawn_aera, math.ceil(spawn_aera / count))
         poss_pos_len = len(possible_positions)
         q, r = divmod(count, poss_pos_len)
         if q != 0:
@@ -112,8 +119,7 @@ class MainScene(GameScene):
         for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
             self.enemi_ships.add(EnemiShip(
                 self.game, self,
-                (pos, spawn_aera[1]),
-                random.choice((0, 1))
+                pos, random.choice((0, 1))
             ))
 
     @functools.lru_cache(1)  # TODO: change probably ?
@@ -162,16 +168,3 @@ class MainScene(GameScene):
     def display_fps(self):
         fps_text = self._get_fps_text(round(self.game.clock.get_fps()))
         self.game.screen.blit(fps_text, (0, 0))
-
-    def draw_bg(self):
-        self.bg_img_y_pos += BG_SCROOL_SPEED * self.game.delta
-        if self.bg_img_y_pos >= self.game.screen_height:
-            self.bg_img_y_pos = self.game.screen_height - self.bg_img.get_height()
-
-        self.bg_rect.y = self.bg_img_y_pos
-
-        if self.bg_rect.y > 0:
-            self.game.screen.blit(self.bg_img, (0, self.bg_rect.y - self.game.screen_height))
-
-        # sub = self.bg_img.subsurface((0, 0), self.screen_size)  TODO: subsurface?
-        self.game.screen.blit(self.bg_img, self.bg_rect)

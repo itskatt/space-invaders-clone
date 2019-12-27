@@ -5,11 +5,10 @@ import pygame
 
 from .assets import get_sprite
 from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
-                        ENEMI_SHIP_NO_SHOOT_TIME, ENEMI_SHIP_SHOOT_INTERVAL,
-                        ENEMI_SHIP_SPEED, LEFT_MOVEMENT_KEYS, RED,
-                        RIGHT_MOVEMENT_KEYS, SHIP_HEALTH, SHIP_SPAWN_EVENT,
-                        SHIP_SPEED, SHOOT_KEY)
-from .lasers import BasicLaser, AutoLaser
+                        ENEMI_SHIP_SHOOT_INTERVAL, ENEMI_SHIP_SPEED,
+                        LEFT_MOVEMENT_KEYS, RED, RIGHT_MOVEMENT_KEYS,
+                        SHIP_HEALTH, SHIP_SPAWN_EVENT, SHIP_SPEED, SHOOT_KEY)
+from .lasers import AutoLaser, BasicLaser
 
 
 def get_damaged(img):
@@ -87,7 +86,7 @@ class Ship(BaseShip):
 
 
 class EnemiShip(BaseShip):
-    def __init__(self, game, scene, original_position, direction):
+    def __init__(self, game, scene, original_x_position, direction):
         super().__init__(game)
 
         self.scene = scene
@@ -97,7 +96,7 @@ class EnemiShip(BaseShip):
         self.damaged_img = get_damaged(self.normal_img)
 
         self.image = self.normal_img
-        self.rect = self.image.get_rect(center=original_position)
+        self.rect = self.image.get_rect(midbottom=(original_x_position, 0))
 
         self.speed = ENEMI_SHIP_SPEED
         self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
@@ -105,8 +104,7 @@ class EnemiShip(BaseShip):
         self.health = random.randint(*ENEMI_SHIP_HEALTH) + math.ceil(self.scene.get_difficulty())  # TODO: change
         self.direction = direction
 
-        self.last_shoot_time = self.game.loop_time + \
-            random.randint(*ENEMI_SHIP_NO_SHOOT_TIME) / 10  # give some time before shooting
+        self.last_shoot_time = self.game.loop_time
 
         # self.is_sliding = False
 
@@ -140,14 +138,19 @@ class EnemiShip(BaseShip):
         # move the sprite
         self.move()
 
+        # can we remove the damage effect, if there is any
+        if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
+            self.image = self.normal_img
+
+        # is the ship fully spawned? if not, move it down and don't shoot
+        if self.rect.centery <= self.game.screen_height / 11.25:
+            self.rect.y += 1 * self.game.delta
+            return
+
         # should it shoot
         if (self.game.loop_time - self.last_shoot_time) > self.shoot_interval:
             self.fire()
             self.last_shoot_time = self.game.loop_time
-
-        # can we remove the damage effect, if there is any
-        if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
-            self.image = self.normal_img
 
         # prevent ship stacking TODO: make it work eventually. yes, eventually
         # for ship in self.game.enemi_ships.sprites():
