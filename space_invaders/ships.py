@@ -11,6 +11,34 @@ from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
 from .lasers import AutoLaser, BasicLaser
 
 
+class ShipShare:
+    def __init__(self):
+        self._dict = {}
+
+    def add_ship(self, ship_type, perc):
+        self._dict[ship_type] = perc
+        self._ajust()
+
+    modify_ship = add_ship
+
+    def remove_ship(self, ship_type):
+        del self._dict[ship_type]
+        self._ajust()
+
+    def get_shares(self, count):
+        d = self._dict.copy()
+        for k in d.items():
+            d[k] = round(count * d[k] / 100)
+
+        return d
+
+    def _ajust(self):
+        total = sum(self._dict.items())
+        if total != 100:
+            for k in self._dict.keys():
+                self._dict[k] = self._dict[k] * 100 / total
+
+
 @functools.lru_cache()
 def get_damaged(img):
     img = img.copy()
@@ -109,7 +137,7 @@ class BaseEnemiShip(BaseShip):
         raise NotImplementedError
 
     def fire(self):
-        raise NotImplementedError
+        pass
 
     def move(self):
         if self.direction == 0:  # left
