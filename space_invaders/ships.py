@@ -1,3 +1,4 @@
+import functools
 import random
 
 import pygame
@@ -10,6 +11,7 @@ from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
 from .lasers import AutoLaser, BasicLaser
 
 
+@functools.lru_cache()
 def get_damaged(img):
     img = img.copy()
     img.fill(RED, special_flags=pygame.BLEND_RGB_ADD)
