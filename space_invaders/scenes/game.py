@@ -87,25 +87,34 @@ class MainScene(GameScene):
         self.draw_status_box()
         self.display_fps()
 
-    def get_difficulty(self):
+    def get_ship_cap(self):
         if self.game.score <= 20:
             return (self.game.score ** 2) / 80 + 5
         elif self.game.score <= 40:
-            return ((self.game.score - 20) ** 2) / 80 + 5
+            return ((self.game.score - 20) ** 2) / 80 + 10
         else:
-            return 0
+            return ((self.game.score - 40) ** 2) / 80 + 15
 
     def spawn_enemi_ships(self, count):
         # check
-        diff = self.get_difficulty()
+        cap = self.get_ship_cap()
         ships = len(self.enemi_ships)
-        if ships + count > diff:
-            count = round(diff - ships)
+        if ships + count > cap:
+            count = round(cap - ships)
         if count <= 0:
             return
+
+        # get ships share according to difficulty
+        ...
+
+        # spawn them
+        self.spawn_enemi_ships_type(count, EnemiShip)
+
+    def spawn_enemi_ships_type(self, count, ship_type):
         # define the spawn aera
         pad = round(self.game.screen_width / 20)
         spawn_aera = self.game.screen_width - pad
+
         # first avoid errors
         possible_positions = range(pad, spawn_aera, math.ceil(spawn_aera / count))
         poss_pos_len = len(possible_positions)
@@ -114,9 +123,10 @@ class MainScene(GameScene):
             counts = [poss_pos_len] * q + [r]
         else:
             counts = [r]
+
         # now place the ships
         for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
-            self.enemi_ships.add(EnemiShip(self.game, self, pos))
+            self.enemi_ships.add(ship_type(self.game, self, pos))
 
     @functools.lru_cache(1)  # TODO: change probably ?
     def _get_status_box(self, score, health):
