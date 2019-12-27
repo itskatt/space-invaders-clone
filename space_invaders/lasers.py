@@ -1,22 +1,58 @@
 import pygame
 
 from .assets import get_sprite
-from .constants import LASER_SPEED, WHITE
+from .constants import (AUTO_LASER_DAMAGE, BASIC_LASER_DAMAGE, BASE_LASER_SPEED,
+                        WHITE)
+
+
+def get_friendly_laser(laser):
+    class FriendlyLaser(laser):
+        def _move(self):
+            self.rect.y = self.rect.y - self.speed * self.game.delta
+
+        def is_colliding(self):
+            collisions = pygame.sprite.spritecollide(self, self.scene.enemi_ships, False)
+            if collisions and pygame.sprite.spritecollideany(self, collisions, pygame.sprite.collide_mask):
+                [c.on_collision(self.damage) for c in collisions]
+                return True
+            return False
+
+    return FriendlyLaser
+
+def get_enemi_laser(laser):
+    class EnemiLaser(laser):
+        def _get_image_name(self):
+            return "enemi-" + super()._get_image_name()
+
+        def _move(self):
+            self.rect.y = self.rect.y + self.speed * self.game.delta
+
+        def is_colliding(self):
+            collision = pygame.sprite.spritecollide(self, [self.game.ship], False)
+            if pygame.sprite.spritecollideany(self, collision, pygame.sprite.collide_mask):
+                self.game.ship.on_collision(self.damage)
+                return True
+            return False
+
+    return EnemiLaser
 
 
 class BaseLaser(pygame.sprite.Sprite):
     def __init__(self, game, scene, original_position):
         super().__init__()
-        self._get_image()
+        self.image = get_sprite(self._get_image_name())
 
         self.game = game
         self.scene = scene
 
         self.rect = self.image.get_rect(center=original_position)
 
-        self.speed = LASER_SPEED
+        self.speed = BASE_LASER_SPEED
 
-    def _get_image(self):
+        if not hasattr(self, "damage"):
+            self.damage = 0
+
+    def _get_image_name(self):
         pass
 
     def _move(self):
@@ -32,32 +68,23 @@ class BaseLaser(pygame.sprite.Sprite):
 
         self._move()
 
-
-class Laser(BaseLaser):
-    def _get_image(self):
-        self.image = get_sprite("laser")
-
-    def _move(self):
-        self.rect.y = self.rect.y - self.speed * self.game.delta
-
-    def is_colliding(self):
-        collisions = pygame.sprite.spritecollide(self, self.scene.enemi_ships, False)
-        if collisions and pygame.sprite.spritecollideany(self, collisions, pygame.sprite.collide_mask):
-            [c.on_collision() for c in collisions]
-            return True
-        return False
+    @classmethod
+    def create(cls, game, scene, original_position, is_enemi):
+        if is_enemi:
+            laser = get_enemi_laser(cls)
+        else:
+            laser = get_friendly_laser(cls)
+        return laser(game, scene, original_position)
 
 
-class EnemiLaser(BaseLaser):
-    def _get_image(self):
-        self.image = get_sprite("enemi-laser")
+class BasicLaser(BaseLaser):
+    damage = BASIC_LASER_DAMAGE
 
-    def _move(self):
-        self.rect.y = self.rect.y + self.speed * self.game.delta
+    def _get_image_name(self):
+        return "basic-laser"
 
-    def is_colliding(self):
-        collision = pygame.sprite.spritecollide(self, [self.game.ship], False)
-        if pygame.sprite.spritecollideany(self, collision, pygame.sprite.collide_mask):
-            self.game.ship.on_collision()
-            return True
-        return False
+class AutoLaser(BaseLaser):
+    damage = AUTO_LASER_DAMAGE
+
+    def _get_image_name(self):
+        return "auto-laser"

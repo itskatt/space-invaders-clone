@@ -9,7 +9,7 @@ from .constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
                         ENEMI_SHIP_SPEED, LEFT_MOVEMENT_KEYS, RED,
                         RIGHT_MOVEMENT_KEYS, SHIP_HEALTH, SHIP_SPAWN_EVENT,
                         SHIP_SPEED, SHOOT_KEY)
-from .lasers import EnemiLaser, Laser
+from .lasers import BasicLaser, AutoLaser
 
 
 def get_damaged(img):
@@ -29,7 +29,7 @@ class BaseShip(pygame.sprite.Sprite):
     def fire(self):
         raise NotImplementedError
 
-    def on_collision(self):
+    def on_collision(self, damage):
         raise NotImplementedError
 
 
@@ -59,17 +59,17 @@ class Ship(BaseShip):
                 self.fire()
 
     def fire(self):
-        self.game.scene.lasers.add(Laser(self.game, self.game.scene, self.rect.midtop))
+        self.game.scene.lasers.add(BasicLaser.create(self.game, self.game.scene, self.rect.midtop, False))
 
-    def on_collision(self):
-        self.health -= 1
+    def on_collision(self, damage):
+        self.health -= damage
         self.image = self.damaged_img
         self.last_hit_time = self.game.loop_time
         if self.health <= 0:
             pygame.event.post(pygame.event.Event(DEATH_EVENT))
 
     def update(self):
-        # lets try moving the ship
+        # lets try moving the ship according to input
         if any([self.game.pressed_keys[key] for key in LEFT_MOVEMENT_KEYS]):
             if not self.rect.topleft[0] < 0:
                 self.rect.x -= self.speed * self.game.delta
@@ -78,7 +78,7 @@ class Ship(BaseShip):
             if not self.rect.topright[0] > self.game.screen_width:
                 self.rect.x += self.speed * self.game.delta
 
-        # can we remove the damage effect, if there is any
+        # can we remove the damage effect, if there is any ?
         if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
             self.image = self.normal_img
 
@@ -111,10 +111,10 @@ class EnemiShip(BaseShip):
         # self.is_sliding = False
 
     def fire(self):
-        self.scene.lasers.add(EnemiLaser(self.game, self.scene, self.rect.midbottom))
+        self.scene.lasers.add(AutoLaser.create(self.game, self.scene, self.rect.midbottom, True))
 
-    def on_collision(self):
-        self.health -= 1
+    def on_collision(self, damage):
+        self.health -= damage
         self.image = self.damaged_img
         self.last_hit_time = self.game.loop_time
 

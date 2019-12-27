@@ -32,8 +32,10 @@ def load_assets(size):
 
 def get_sprite(name):
     try:
+        1
         return _cache["sprites"][name]
     except KeyError:
+        log.warning(f"Failed to get sprite {name}")
         return _cache["sprites"]["error"]
 
 
