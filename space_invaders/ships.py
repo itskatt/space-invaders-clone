@@ -33,7 +33,7 @@ class ShipShare:
         return d
 
     def _ajust(self):
-        total = sum(self._dict.items())
+        total = sum(self._dict.values())
         if total != 100:
             for k in self._dict.keys():
                 self._dict[k] = self._dict[k] * 100 / total
