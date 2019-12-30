@@ -9,7 +9,7 @@ from ..assets import get_sprite, pixeled
 from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
                          ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, WHITE)
-from ..ships import EnemiShip, ShipShare
+from ..ships import EnemiShip, ShipShare, HeavyEnemiShip
 from . import BaseScene
 
 
@@ -90,10 +90,11 @@ class MainScene(GameScene):
         self.draw_status_box()
         self.display_fps()
 
-    def get_ship_cap(self):
+    def get_ship_cap(self):  # a big TODO
         if self.game.score <= 20:
             return (self.game.score ** 2) / 80 + 5
         elif self.game.score <= 40:
+            self.share.add_ship(HeavyEnemiShip, 50)
             return ((self.game.score - 20) ** 2) / 80 + 10
         else:
             return ((self.game.score - 40) ** 2) / 80 + 15
