@@ -26,8 +26,8 @@ class ShipShare:
         self._ajust()
 
     def get_shares(self, count):
-        d = self._dict.copy()
-        for k in d.items():
+        d = {}
+        for k in self._dict.items():
             d[k] = round(count * d[k] / 100)
 
         return d
