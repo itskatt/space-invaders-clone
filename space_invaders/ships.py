@@ -27,10 +27,10 @@ class ShipShare:
 
     def get_shares(self, count):
         d = {}
-        for k in self._dict.items():
-            d[k] = round(count * d[k] / 100)
+        for k in self._dict.keys():
+            d[k] = round(count * self._dict[k] / 100)
 
-        return d
+        return d.items()
 
     def _ajust(self):
         total = sum(self._dict.values())

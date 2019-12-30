@@ -9,7 +9,7 @@ from ..assets import get_sprite, pixeled
 from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
                          ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, WHITE)
-from ..ships import EnemiShip
+from ..ships import EnemiShip, ShipShare
 from . import BaseScene
 
 
@@ -43,6 +43,9 @@ class MainScene(GameScene):
             self.lasers,
             self.enemi_ships
         ]
+
+        self.share = ShipShare()
+        self.share.add_ship(EnemiShip, 100)
 
         # scene action init
         self.spawn_enemi_ships(5)
@@ -105,10 +108,8 @@ class MainScene(GameScene):
             return
 
         # get ships share according to difficulty
-        ...
-
-        # spawn them
-        self.spawn_enemi_ships_type(count, EnemiShip)
+        for ship_type, share in self.share.get_shares(count):
+            self.spawn_enemi_ships_type(share, ship_type)
 
     def spawn_enemi_ships_type(self, count, ship_type):
         # define the spawn aera
