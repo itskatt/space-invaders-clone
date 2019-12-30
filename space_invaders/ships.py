@@ -129,13 +129,12 @@ class BaseEnemiShip(BaseShip):
         self.rect = self.image.get_rect(midbottom=(original_x_position, 0))
         
         self.direction = random.randint(0, 1)
+        self.last_shoot_time = self.game.loop_time
         
         # default values
         self.health = random.randint(*ENEMI_SHIP_HEALTH)
         self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
         self.awarded_points = 1
-
-        self.last_shoot_time = self.game.loop_time
 
     def _get_image_name(self):
         raise NotImplementedError
@@ -197,27 +196,22 @@ class BaseEnemiShip(BaseShip):
         #             self.move()
 
 
-class EnemiShip(BaseEnemiShip):
-    def __init__(self, game, scene, original_x_position):
-        super().__init__(game, scene, original_x_position)
+class BaseFireingShip(BaseEnemiShip):
+    def fire(self):
+        self.scene.lasers.add(self.laser_type.create(self.game, self.scene, self.rect.midbottom, True))
 
-        self.speed = ENEMI_SHIP_SPEED
+
+class EnemiShip(BaseFireingShip):
+    speed = ENEMI_SHIP_SPEED
+    laser_type = AutoLaser
 
     def _get_image_name(self):
         return "enemi-ship"
 
-    def fire(self):
-        self.scene.lasers.add(AutoLaser.create(self.game, self.scene, self.rect.midbottom, True))
 
-
-class HeavyEnemiShip(BaseEnemiShip):  # TODO: FIXME
-    def __init__(self, game, scene, original_x_position):
-        super().__init__(game, scene, original_x_position)
-
-        self.speed = ENEMI_SHIP_SPEED / 2
+class HeavyEnemiShip(BaseFireingShip):  # TODO: FIXME
+    speed = ENEMI_SHIP_SPEED / 2
+    laser_type = BasicLaser
 
     def _get_image_name(self):
         return "enemi-ship"
-
-    def fire(self):
-        self.scene.lasers.add(BasicLaser.create(self.game, self.scene, self.rect.midbottom, True))
