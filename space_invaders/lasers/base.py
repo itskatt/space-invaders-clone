@@ -1,8 +1,7 @@
 import pygame
 
-from .assets import get_sprite
-from .constants import (AUTO_LASER_DAMAGE, BASE_LASER_SPEED,
-                        BASIC_LASER_DAMAGE, WHITE)
+from ..assets import get_sprite
+from ..constants import BASE_LASER_SPEED
 
 
 class BaseLaserTeam:
@@ -80,17 +79,3 @@ class BaseLaser(pygame.sprite.Sprite):
         else:
             laser = get_friendly_laser(cls)
         return laser(game, scene, original_position)
-
-
-class BasicLaser(BaseLaser):
-    damage = BASIC_LASER_DAMAGE
-
-    def _get_image_name(self):
-        return "basic-laser"
-
-
-class AutoLaser(BaseLaser):
-    damage = AUTO_LASER_DAMAGE
-
-    def _get_image_name(self):
-        return "auto-laser"
