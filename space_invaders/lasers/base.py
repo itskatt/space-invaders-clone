@@ -80,7 +80,7 @@ class BaseLaser(pygame.sprite.Sprite):
     @classmethod
     def create(cls, game, scene, original_position, is_enemi):
         if is_enemi:
-            laser = type("Enemi" + cls.__class__.__name__, (cls, BaseLaserTeam), _enemi_dict)
+            laser = type("Enemi" + cls.__name__, (cls, BaseLaserTeam), _enemi_dict)
         else:
-            laser = type("Friendly" + cls.__class__.__name__, (cls, BaseLaserTeam), _friendly_dict)
-        return laser(game, scene, original_position)
+            laser = type("Friendly" + cls.__name__, (cls, BaseLaserTeam), _friendly_dict)
+        return laser(game, scene, original_position)  # FIXME: overwriting is not happening proprely
