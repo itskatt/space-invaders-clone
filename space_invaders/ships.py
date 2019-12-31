@@ -137,7 +137,7 @@ class BaseEnemiShip(BaseShip):
         self.awarded_points = 1
 
     def _get_image_name(self):
-        raise NotImplementedError
+        return self.image_name
 
     def fire(self):
         pass
@@ -196,7 +196,7 @@ class BaseEnemiShip(BaseShip):
         #             self.move()
 
 
-class BaseFireingShip(BaseEnemiShip):
+class BaseFireingShip(BaseEnemiShip):  # TODO: make Ship class inherit from this
     def fire(self):
         self.scene.lasers.add(self.laser_type.create(self.game, self.scene, self.rect.midbottom, True))
 
@@ -204,14 +204,11 @@ class BaseFireingShip(BaseEnemiShip):
 class EnemiShip(BaseFireingShip):
     speed = ENEMI_SHIP_SPEED
     laser_type = AutoLaser
-
-    def _get_image_name(self):
-        return "enemi-ship"
+    image_name = "enemi-ship"
 
 
 class HeavyEnemiShip(BaseFireingShip):  # TODO: FIXME
     speed = ENEMI_SHIP_SPEED / 2
     laser_type = BasicLaser
+    image_name = "enemi-ship"
 
-    def _get_image_name(self):
-        return "enemi-ship"
