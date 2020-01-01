@@ -9,7 +9,7 @@ from ..lasers import AutoLaser, BasicLaser
 from .base import BaseFireingShip, BaseEnemiShip
 
 
-class ShipShare:
+class ShipShare:  # TODO: remove
     def __init__(self):
         self._dict = {}
 

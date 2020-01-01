@@ -1,7 +1,9 @@
 import functools
+import logging
 import math
 import random
-from itertools import chain
+from collections import Counter
+from itertools import chain, islice
 
 import pygame
 
@@ -9,8 +11,15 @@ from ..assets import get_sprite, pixeled
 from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
                          ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, WHITE)
-from ..ships import EnemiShip, ShipShare, HeavyEnemiShip
+from ..ships import EnemiShip, HeavyEnemiShip, ShipShare
 from . import BaseScene
+
+log = logging.getLogger(__name__)
+
+# There seems to have an issue with the new wave system:
+#   - the first wave does not spawn
+#   - the current_wave generator is generated fine for the first wave
+#   - ???
 
 
 class GameScene(BaseScene):
@@ -44,8 +53,10 @@ class MainScene(GameScene):
             self.enemi_ships
         ]
 
-        self.share = ShipShare()
-        self.share.add_ship(EnemiShip, 100)
+        # wave managing
+        self.wave_count = 1
+        self.wave_data = self.get_wave_data()
+        self.current_wave = self.create_wave(self.wave_data[1])
 
         # scene action init
         self.spawn_enemi_ships(5)
@@ -63,6 +74,70 @@ class MainScene(GameScene):
             self.spawn_enemi_ships(random.randint(2, 4))
 
         self.ship.get_event(event)
+
+    def get_wave_data(self):
+        maping = {  # TODO: probably move
+            1: (
+                lambda score: (score ** 2) / 80 + 5,  # cap func
+                ((EnemiShip, 20),)  # ship type, count
+            ),
+            2: (
+                lambda score: ((score - 20) ** 2) / 80 + 10,
+                ((EnemiShip, 15), (HeavyEnemiShip, 10)),
+            ),
+            "final": (
+                lambda score: ((score - 40) ** 2) / 80 + 15,
+                ((object, 0),)
+            )
+        }
+        return maping.get(self.wave_count, maping["final"])
+
+    def create_wave(self, ships):
+        wave = []
+        for ship_type, count in ships:
+            wave.extend((ship_type for _ in range(count)))
+
+        random.shuffle(wave)
+        return (s for s in wave)
+
+    def spawn_enemi_ships(self, count):
+        # ajust the count according to the current enemy cap
+        cap = self.wave_data[0](self.game.score)
+        ships = len(self.enemi_ships)
+        if ships + count > cap:
+            count = round(cap - ships)
+        if count <= 0:
+            return
+
+        # wave gen is exausted, so lets move to the next wave
+        if not list(self.current_wave):
+            self.wave_count += 1
+            log.info(f"Moving to wave {self.wave_count}")
+            self.wave_data = self.get_wave_data()
+            self.current_wave = self.create_wave(self.wave_data[1])
+
+        # finaly spawn the ships
+        for ship_type, ship_count in Counter(islice(self.current_wave, count)).items():
+            self.spawn_enemi_ships_type(ship_count, ship_type)
+
+    def spawn_enemi_ships_type(self, count, ship_type):
+        # define the spawn aera
+        pad = round(self.game.screen_width / 20)
+        spawn_aera = self.game.screen_width - pad
+
+        # first avoid errors
+        possible_positions = range(pad, spawn_aera, math.ceil(spawn_aera / count))
+        poss_pos_len = len(possible_positions)
+        q, r = divmod(count, poss_pos_len)
+        if q != 0:
+            counts = [poss_pos_len] * q + [r]
+        else:
+            counts = [r]
+
+        # now place the ships
+        log.debug(f"Spawning {count} ships of typee {ship_type}")
+        for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
+            self.enemi_ships.add(ship_type(self.game, self, pos))
 
     def update(self):
         self.ship.update()
@@ -89,46 +164,6 @@ class MainScene(GameScene):
 
         self.draw_status_box()
         self.display_fps()
-
-    def get_ship_cap(self):  # a big TODO
-        if self.game.score <= 20:
-            return (self.game.score ** 2) / 80 + 5
-        elif self.game.score <= 40:
-            self.share.add_ship(HeavyEnemiShip, 50)
-            return ((self.game.score - 20) ** 2) / 80 + 10
-        else:
-            return ((self.game.score - 40) ** 2) / 80 + 15
-
-    def spawn_enemi_ships(self, count):
-        # check
-        cap = self.get_ship_cap()
-        ships = len(self.enemi_ships)
-        if ships + count > cap:
-            count = round(cap - ships)
-        if count <= 0:
-            return
-
-        # get ships share according to difficulty
-        for ship_type, share in self.share.get_shares(count):
-            self.spawn_enemi_ships_type(share, ship_type)
-
-    def spawn_enemi_ships_type(self, count, ship_type):
-        # define the spawn aera
-        pad = round(self.game.screen_width / 20)
-        spawn_aera = self.game.screen_width - pad
-
-        # first avoid errors
-        possible_positions = range(pad, spawn_aera, math.ceil(spawn_aera / count))
-        poss_pos_len = len(possible_positions)
-        q, r = divmod(count, poss_pos_len)
-        if q != 0:
-            counts = [poss_pos_len] * q + [r]
-        else:
-            counts = [r]
-
-        # now place the ships
-        for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
-            self.enemi_ships.add(ship_type(self.game, self, pos))
 
     @functools.lru_cache(1)  # TODO: change probably ?
     def _get_status_box(self, score, health):
