@@ -1,3 +1,5 @@
+from types import MethodType
+
 import pygame
 
 from ..assets import get_sprite
@@ -79,8 +81,8 @@ class BaseLaser(pygame.sprite.Sprite):
 
     @classmethod
     def create(cls, game, scene, original_position, is_enemi):
-        if is_enemi:
-            laser = type("Enemi" + cls.__name__, (cls, BaseLaserTeam), _enemi_dict)
-        else:
-            laser = type("Friendly" + cls.__name__, (cls, BaseLaserTeam), _friendly_dict)
-        return laser(game, scene, original_position)  # FIXME: overwriting is not happening proprely
+        laser = type("Enemi" if is_enemi else "Friendly" + cls.__name__, (cls, BaseLaserTeam), {})
+        laser_obj = laser(game, scene, original_position)
+        for k, v in (_enemi_dict if is_enemi else _friendly_dict).items():
+            setattr(laser_obj, k, MethodType(v, laser_obj))
+        return laser_obj
