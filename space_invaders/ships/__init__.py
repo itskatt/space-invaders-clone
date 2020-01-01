@@ -1,15 +1,12 @@
-import random
-
 import pygame
 
 from ..assets import get_sprite
-from ..constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
-                         ENEMI_SHIP_SHOOT_INTERVAL, ENEMI_SHIP_SPEED,
-                         LEFT_MOVEMENT_KEYS, RIGHT_MOVEMENT_KEYS, SHIP_HEALTH,
-                         SHIP_SPAWN_EVENT, SHIP_SPEED, SHOOT_KEY)
+from ..constants import (DEATH_EVENT, ENEMI_SHIP_SPEED, LEFT_MOVEMENT_KEYS,
+                         RIGHT_MOVEMENT_KEYS, SHIP_HEALTH, SHIP_SPEED,
+                         SHOOT_KEY)
 from ..filters import get_damaged
 from ..lasers import AutoLaser, BasicLaser
-from .base import BaseEnemiShip, BaseFireingShip, BaseShip
+from .base import BaseFireingShip, BaseShip
 
 
 class ShipShare:

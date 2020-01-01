@@ -3,7 +3,7 @@ import random
 import pygame
 
 from ..assets import get_sprite
-from ..constants import ENEMI_SHIP_HEALTH, ENEMI_SHIP_SHOOT_INTERVAL, RED
+from ..constants import ENEMI_SHIP_HEALTH, ENEMI_SHIP_SHOOT_INTERVAL
 from ..filters import get_damaged
 
 
@@ -20,6 +20,7 @@ class BaseShip(pygame.sprite.Sprite):
 
     def on_collision(self, damage):
         raise NotImplementedError
+
 
 class BaseEnemiShip(BaseShip):
     def __init__(self, game, scene, original_x_position):

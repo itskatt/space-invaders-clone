@@ -1,5 +1,3 @@
-import pygame
-
 from ..constants import AUTO_LASER_DAMAGE, BASIC_LASER_DAMAGE
 from .base import BaseLaser
 
