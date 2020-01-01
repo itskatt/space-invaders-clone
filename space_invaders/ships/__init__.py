@@ -98,7 +98,7 @@ class EnemiShip(BaseFireingShip):
     image_name = "enemi-ship"
 
 
-class HeavyEnemiShip(BaseFireingShip):  # TODO: FIXME
+class HeavyEnemiShip(BaseFireingShip):  # TODO: temporary
     speed = ENEMI_SHIP_SPEED / 2
     laser_type = BasicLaser
     image_name = "enemi-ship"

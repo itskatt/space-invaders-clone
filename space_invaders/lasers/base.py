@@ -52,11 +52,8 @@ class BaseLaser(pygame.sprite.Sprite):
 
         self.speed = BASE_LASER_SPEED
 
-        if not hasattr(self, "damage"):  # TODO: change/remove
-            self.damage = 0
-
-    def _get_image_name(self):
-        pass
+    def _get_image_name(self):  # its a TODO, ofc
+        return self.image_name
 
     def move(self):
         pass
