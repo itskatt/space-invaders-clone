@@ -22,6 +22,11 @@ class BaseShip(pygame.sprite.Sprite):
         raise NotImplementedError
 
 
+class BaseFireingShip(BaseShip):
+    def fire(self):
+        self.scene.lasers.add(self.laser_type.create(self.game, self.scene, self.rect.midbottom, True))
+
+
 class BaseEnemiShip(BaseShip):
     def __init__(self, game, scene, original_x_position):
         super().__init__(game)
@@ -100,8 +105,3 @@ class BaseEnemiShip(BaseShip):
         #         if not 0 <= self.rect.x >= self.game.screen_width:
         #             self.is_sliding = True
         #             self.move()
-
-
-class BaseFireingShip(BaseEnemiShip):  # TODO: make Ship class inherit from this
-    def fire(self):
-        self.scene.lasers.add(self.laser_type.create(self.game, self.scene, self.rect.midbottom, True))

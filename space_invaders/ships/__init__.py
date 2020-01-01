@@ -6,7 +6,7 @@ from ..constants import (DEATH_EVENT, ENEMI_SHIP_SPEED, LEFT_MOVEMENT_KEYS,
                          SHOOT_KEY)
 from ..filters import get_damaged
 from ..lasers import AutoLaser, BasicLaser
-from .base import BaseFireingShip, BaseShip
+from .base import BaseFireingShip, BaseEnemiShip
 
 
 class ShipShare:
@@ -39,7 +39,7 @@ class ShipShare:
                 self._dict[k] = self._dict[k] * 100 / total
 
 
-class Ship(BaseShip):
+class Ship(BaseFireingShip):
     def __init__(self, game):
         super().__init__(game)
 
@@ -92,13 +92,13 @@ class Ship(BaseShip):
         surface.blit(self.image, self.rect)
 
 
-class EnemiShip(BaseFireingShip):
+class EnemiShip(BaseFireingShip, BaseEnemiShip):
     speed = ENEMI_SHIP_SPEED
     laser_type = AutoLaser
     image_name = "enemi-ship"
 
 
-class HeavyEnemiShip(BaseFireingShip):  # TODO: temporary, for testing
+class HeavyEnemiShip(BaseFireingShip, BaseEnemiShip):  # TODO: temporary, for testing
     speed = ENEMI_SHIP_SPEED / 2
     laser_type = BasicLaser
     image_name = "enemi-heavy-ship"
