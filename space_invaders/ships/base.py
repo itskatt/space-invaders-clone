@@ -1,17 +1,10 @@
-import functools
 import random
 
 import pygame
 
 from ..assets import get_sprite
 from ..constants import ENEMI_SHIP_HEALTH, ENEMI_SHIP_SHOOT_INTERVAL, RED
-
-
-@functools.lru_cache()
-def get_damaged(img):  # TODO: move to own file
-    img = img.copy()
-    img.fill(RED, special_flags=pygame.BLEND_RGB_ADD)
-    return img
+from ..filters import get_damaged
 
 
 class BaseShip(pygame.sprite.Sprite):

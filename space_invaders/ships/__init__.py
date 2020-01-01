@@ -7,8 +7,9 @@ from ..constants import (DEATH_EVENT, ENEMI_SHIP_HEALTH,
                          ENEMI_SHIP_SHOOT_INTERVAL, ENEMI_SHIP_SPEED,
                          LEFT_MOVEMENT_KEYS, RIGHT_MOVEMENT_KEYS, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, SHIP_SPEED, SHOOT_KEY)
+from ..filters import get_damaged
 from ..lasers import AutoLaser, BasicLaser
-from .base import BaseEnemiShip, BaseFireingShip, BaseShip, get_damaged  # see TODO at func def
+from .base import BaseEnemiShip, BaseFireingShip, BaseShip
 
 
 class ShipShare:
