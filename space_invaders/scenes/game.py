@@ -1,6 +1,7 @@
 import functools
 import logging
 import math
+import queue
 import random
 from collections import Counter
 from itertools import chain, islice
@@ -15,11 +16,6 @@ from ..ships import EnemiShip, HeavyEnemiShip, ShipShare
 from . import BaseScene
 
 log = logging.getLogger(__name__)
-
-# There seems to have an issue with the new wave system:
-#   - the first wave does not spawn
-#   - the current_wave generator is generated fine for the first wave
-#   - ???
 
 
 class GameScene(BaseScene):
@@ -56,7 +52,8 @@ class MainScene(GameScene):
         # wave managing
         self.wave_count = 1
         self.wave_data = self.get_wave_data()
-        self.current_wave = self.create_wave(self.wave_data[1])
+        self.current_wave_queue = queue.Queue()
+        self.create_wave(self.wave_data[1])
 
         # scene action init
         self.spawn_enemi_ships(5)
@@ -98,7 +95,9 @@ class MainScene(GameScene):
             wave.extend((ship_type for _ in range(count)))
 
         random.shuffle(wave)
-        return (s for s in wave)
+
+        for ship_type in wave:
+            self.current_wave_queue.put(ship_type)
 
     def spawn_enemi_ships(self, count):
         # ajust the count according to the current enemy cap
@@ -109,20 +108,25 @@ class MainScene(GameScene):
         if count <= 0:
             return
 
-        # spawn the ships
-        print(len(list(self.current_wave)), "  ", end="")  # huh, see https://stackoverflow.com/questions/5234090/how-to-take-the-first-n-items-from-a-generator-or-list-in-python
-        slic = islice(self.current_wave, count)
-        print(len(list(slic)), "  ", end="")
-        for ship_type, ship_count in Counter(slic).items():
-            self.spawn_enemi_ships_type(ship_count, ship_type)
-        print(len(list(self.current_wave)))
+        # consume items from the queue
+        wave = []
+        is_empty = False
+        try:
+            for _ in range(count):
+                wave.append(self.current_wave_queue.get_nowait())
+        except queue.Empty:
+            is_empty = True
 
-        # wave gen is exausted, so lets move to the next wave
-        if not list(self.current_wave):
+        # spawn the ships
+        for ship_type, ship_count in Counter(wave).items():
+            self.spawn_enemi_ships_type(ship_count, ship_type)
+
+        # if the queue is empty, so lets move to the next wave
+        if is_empty:
             self.wave_count += 1
             log.info(f"Moving to wave {self.wave_count}")
             self.wave_data = self.get_wave_data()
-            self.current_wave = self.create_wave(self.wave_data[1])
+            self.create_wave(self.wave_data[1])
 
     def spawn_enemi_ships_type(self, count, ship_type):
         # define the spawn aera
