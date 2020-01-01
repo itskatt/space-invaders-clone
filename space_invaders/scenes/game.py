@@ -109,16 +109,20 @@ class MainScene(GameScene):
         if count <= 0:
             return
 
+        # spawn the ships
+        print(len(list(self.current_wave)), "  ", end="")  # huh, see https://stackoverflow.com/questions/5234090/how-to-take-the-first-n-items-from-a-generator-or-list-in-python
+        slic = islice(self.current_wave, count)
+        print(len(list(slic)), "  ", end="")
+        for ship_type, ship_count in Counter(slic).items():
+            self.spawn_enemi_ships_type(ship_count, ship_type)
+        print(len(list(self.current_wave)))
+
         # wave gen is exausted, so lets move to the next wave
         if not list(self.current_wave):
             self.wave_count += 1
             log.info(f"Moving to wave {self.wave_count}")
             self.wave_data = self.get_wave_data()
             self.current_wave = self.create_wave(self.wave_data[1])
-
-        # finaly spawn the ships
-        for ship_type, ship_count in Counter(islice(self.current_wave, count)).items():
-            self.spawn_enemi_ships_type(ship_count, ship_type)
 
     def spawn_enemi_ships_type(self, count, ship_type):
         # define the spawn aera
