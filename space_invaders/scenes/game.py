@@ -84,7 +84,7 @@ class MainScene(GameScene):
             ),
             "final": (
                 lambda score: ((score - 40) ** 2) / 80 + 15,
-                ((object, 0),)
+                ((EnemiShip, 500), (HeavyEnemiShip, 500))  # TEMPORARY
             )
         }
         return maping.get(self.wave_count, maping["final"])
@@ -124,7 +124,7 @@ class MainScene(GameScene):
         # if the queue is empty, so lets move to the next wave
         if is_empty:
             self.wave_count += 1
-            log.info(f"Moving to wave {self.wave_count}")
+            log.info(f"Moving to wave {self.wave_count}")  # TODO: handle final wave case
             self.wave_data = self.get_wave_data()
             self.create_wave(self.wave_data[1])
 
