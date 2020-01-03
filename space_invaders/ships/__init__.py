@@ -1,15 +1,17 @@
+import random
+
 import pygame
 
 from ..assets import get_sprite
-from ..constants import (DEATH_EVENT, ENEMI_SHIP_SPEED, LEFT_MOVEMENT_KEYS,
+from ..constants import (DEATH_EVENT, LEFT_MOVEMENT_KEYS,
                          RIGHT_MOVEMENT_KEYS, SHIP_HEALTH, SHIP_SPEED,
                          SHOOT_KEY)
 from ..filters import get_damaged
 from ..lasers import AutoLaser, BasicLaser
-from .base import BaseFireingShip, BaseEnemiShip
+from .base import BaseEnemiShip, BaseFireingShip
 
 
-class Ship(BaseFireingShip):
+class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
     def __init__(self, game):
         super().__init__(game)
 
@@ -63,12 +65,14 @@ class Ship(BaseFireingShip):
 
 
 class EnemiShip(BaseFireingShip, BaseEnemiShip):
-    speed = ENEMI_SHIP_SPEED
+    speed = 4
+    health = 4
     laser_type = AutoLaser
     image_name = "enemi-ship"
 
 
 class HeavyEnemiShip(BaseFireingShip, BaseEnemiShip):  # TODO: temporary, for testing
-    speed = ENEMI_SHIP_SPEED / 2
+    speed = 3.5
+    health = 6
     laser_type = BasicLaser
     image_name = "enemi-heavy-ship"

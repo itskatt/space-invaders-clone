@@ -1,7 +1,8 @@
 import pygame
 
 from ..assets import get_sprite
-from ..constants import BASE_LASER_SPEED
+from ..base import BaseSprite
+from ..constants import DEFAULT_LASER_SPEED, DEFAULT_LASER_DAMAGE
 
 
 class BaseLaserTeam:
@@ -38,19 +39,21 @@ def get_enemi_laser(laser):
     return EnemiLaser
 
 
-class BaseLaser(pygame.sprite.Sprite):
+class BaseLaser(BaseSprite):
     def __init__(self, game, scene, original_position):
         super().__init__()
         self.image = get_sprite(
             ("enemi-" if self.__class__.__name__.startswith("Enemi") else "") + self._get_image_name()
-        )
+        )  # TODO: change
 
         self.game = game
         self.scene = scene
 
         self.rect = self.image.get_rect(center=original_position)
 
-        self.speed = BASE_LASER_SPEED
+        # defaults
+        self.set_default("speed", DEFAULT_LASER_SPEED)
+        self.set_default("damage", DEFAULT_LASER_DAMAGE)
 
     def _get_image_name(self):  # its a TODO, ofc
         return self.image_name

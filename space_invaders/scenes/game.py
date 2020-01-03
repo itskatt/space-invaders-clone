@@ -12,7 +12,7 @@ from ..assets import get_sprite, pixeled
 from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
                          ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, WHITE)
-from ..ships import EnemiShip, HeavyEnemiShip, ShipShare
+from ..ships import EnemiShip, HeavyEnemiShip
 from . import BaseScene
 
 log = logging.getLogger(__name__)

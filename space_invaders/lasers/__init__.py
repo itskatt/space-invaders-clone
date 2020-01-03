@@ -1,12 +1,11 @@
-from ..constants import AUTO_LASER_DAMAGE, BASIC_LASER_DAMAGE
 from .base import BaseLaser
 
 
 class BasicLaser(BaseLaser):
-    damage = BASIC_LASER_DAMAGE
+    damage = 2
     image_name = "basic-laser"
 
 
 class AutoLaser(BaseLaser):
-    damage = AUTO_LASER_DAMAGE
+    damage = 1
     image_name = "auto-laser"

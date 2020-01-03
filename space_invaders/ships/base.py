@@ -1,13 +1,14 @@
-import random
+from random import randint
 
 import pygame
 
 from ..assets import get_sprite
-from ..constants import ENEMI_SHIP_HEALTH, ENEMI_SHIP_SHOOT_INTERVAL
+from ..base import BaseSprite
+from ..constants import DEFAULT_ENEMI_SHIP_HEALTH, DEFAULT_ENEMI_SHIP_SPEED
 from ..filters import get_damaged
 
 
-class BaseShip(pygame.sprite.Sprite):
+class BaseShip(BaseSprite):
     def __init__(self, game):
         super().__init__()
 
@@ -38,13 +39,14 @@ class BaseEnemiShip(BaseShip):
 
         self.image = self.normal_img
         self.rect = self.image.get_rect(midbottom=(original_x_position, 0))
-        
-        self.direction = random.randint(0, 1)
+
+        self.direction = randint(0, 1)
         self.last_shoot_time = self.game.loop_time
         
         # default values
-        self.health = random.randint(*ENEMI_SHIP_HEALTH)
-        self.shoot_interval = random.randint(*ENEMI_SHIP_SHOOT_INTERVAL) / 10
+        self.set_default("health", DEFAULT_ENEMI_SHIP_HEALTH)
+        self.set_default("speed", DEFAULT_ENEMI_SHIP_SPEED)
+        self.set_default("shoot_interval", randint(8, 12) / 10)
         self.awarded_points = 1
 
     def _get_image_name(self):
@@ -61,11 +63,11 @@ class BaseEnemiShip(BaseShip):
             self.rect.x += self.speed * self.game.delta
 
     def on_collision(self, damage):
-        self.health -= damage
+        self.health -= damage  # pylint: disable=no-member
         self.image = self.damaged_img
         self.last_hit_time = self.game.loop_time
 
-        if self.health <= 0:
+        if self.health <= 0:  # pylint: disable=no-member
             self.game.score += self.awarded_points
             self.kill()
 
