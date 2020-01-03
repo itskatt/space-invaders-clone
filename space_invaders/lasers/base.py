@@ -2,7 +2,8 @@ import pygame
 
 from ..assets import get_sprite
 from ..base import BaseSprite
-from ..constants import DEFAULT_LASER_SPEED, DEFAULT_LASER_DAMAGE
+from ..constants import (BASE_SCREEN_SIZE, DEFAULT_LASER_DAMAGE,
+                         DEFAULT_LASER_SPEED)
 
 
 class BaseLaserTeam:
@@ -12,7 +13,7 @@ class BaseLaserTeam:
 def get_friendly_laser(laser):
     class FriendlyLaser(laser, BaseLaserTeam):
         def move(self):
-            self.rect.y = self.rect.y - self.speed * self.game.delta
+            self.rect.y -= (self.speed * self.game.screen_height / BASE_SCREEN_SIZE[1]) * self.game.delta
 
         def is_colliding(self):
             collisions = pygame.sprite.spritecollide(self, self.scene.enemi_ships, False)
@@ -27,7 +28,7 @@ def get_friendly_laser(laser):
 def get_enemi_laser(laser):
     class EnemiLaser(laser, BaseLaserTeam):
         def move(self):
-            self.rect.y = self.rect.y + self.speed * self.game.delta
+            self.rect.y += (self.speed * self.game.screen_height / BASE_SCREEN_SIZE[1]) * self.game.delta
 
         def is_colliding(self):
             collision = pygame.sprite.spritecollide(self, [self.game.ship], False)

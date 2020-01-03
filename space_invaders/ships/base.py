@@ -4,7 +4,8 @@ import pygame
 
 from ..assets import get_sprite
 from ..base import BaseSprite
-from ..constants import DEFAULT_ENEMI_SHIP_HEALTH, DEFAULT_ENEMI_SHIP_SPEED
+from ..constants import (BASE_SCREEN_SIZE, DEFAULT_ENEMI_SHIP_HEALTH,
+                         DEFAULT_ENEMI_SHIP_SPEED)
 from ..filters import get_damaged
 
 
@@ -57,10 +58,10 @@ class BaseEnemiShip(BaseShip):
 
     def move(self):
         if self.direction == 0:  # left
-            self.rect.x -= self.speed * self.game.delta
+            self.rect.x -= (self.speed * self.game.screen_width / BASE_SCREEN_SIZE[0]) * self.game.delta
 
         elif self.direction == 1:  # right
-            self.rect.x += self.speed * self.game.delta
+            self.rect.x += (self.speed * self.game.screen_width / BASE_SCREEN_SIZE[0]) * self.game.delta
 
     def on_collision(self, damage):
         self.health -= damage  # pylint: disable=no-member

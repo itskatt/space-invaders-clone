@@ -65,14 +65,14 @@ class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
 
 
 class EnemiShip(BaseFireingShip, BaseEnemiShip):
-    speed = 4
+    speed = 3.5
     health = 4
     laser_type = AutoLaser
     image_name = "enemi-ship"
 
 
 class HeavyEnemiShip(BaseFireingShip, BaseEnemiShip):  # TODO: temporary, for testing
-    speed = 3.5
+    speed = 2.5
     health = 6
     laser_type = BasicLaser
     image_name = "enemi-heavy-ship"
