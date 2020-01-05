@@ -45,6 +45,8 @@ class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
             pygame.event.post(pygame.event.Event(DEATH_EVENT))
 
     def update(self):
+        super().update()
+
         # lets try moving the ship according to input
         if any([self.game.pressed_keys[key] for key in LEFT_MOVEMENT_KEYS]):
             if not self.rect.topleft[0] < 0:
