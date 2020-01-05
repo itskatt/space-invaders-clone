@@ -54,10 +54,6 @@ class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
             if not self.rect.topright[0] > self.game.screen_width:
                 self.rect.x += self.speed * self.game.delta
 
-        # can we remove the damage effect, if there is any ?
-        if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
-            self.image = self.normal_img
-
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 

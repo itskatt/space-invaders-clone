@@ -5,11 +5,13 @@ import pygame
 from ..assets import get_sprite
 from ..base import BaseSprite
 from ..constants import (BASE_SCREEN_SIZE, DEFAULT_ENEMI_SHIP_HEALTH,
-                         DEFAULT_ENEMI_SHIP_SPEED)
+                         DEFAULT_ENEMI_SHIP_SPEED, DAMAGED_EFFECT_STAY_TIME)
 from ..filters import get_damaged
 
 
 class BaseShip(BaseSprite):
+    image: pygame.Surface
+
     def __init__(self, game):
         super().__init__()
 
@@ -22,6 +24,11 @@ class BaseShip(BaseSprite):
 
     def on_collision(self, damage):
         raise NotImplementedError
+
+    def update(self):
+        # can we remove the damage effect, if there is any
+        if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= DAMAGED_EFFECT_STAY_TIME:
+            self.image = self.normal_img
 
 
 class BaseFireingShip(BaseShip):
@@ -73,6 +80,7 @@ class BaseEnemiShip(BaseShip):
             self.kill()
 
     def update(self):
+        super().update()
         # if self.is_sliding:
         #     self.is_sliding = False
 
@@ -82,10 +90,6 @@ class BaseEnemiShip(BaseShip):
 
         # move the sprite
         self.move()
-
-        # can we remove the damage effect, if there is any
-        if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= 0.1:
-            self.image = self.normal_img
 
         # is the ship fully spawned? if not, move it down and don't shoot
         if self.rect.centery <= self.game.screen_height / 11.25:
