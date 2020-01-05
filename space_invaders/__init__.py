@@ -1,3 +1,6 @@
+"""
+Space invaders game.
+"""
 import argparse
 import logging
 import os
@@ -57,6 +60,9 @@ def parse_args():
 
 
 def main():
+    """
+    The main function, sets everyting up and runs the game.
+    """
     with setup_log():
         args = parse_args()
 
