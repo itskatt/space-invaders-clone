@@ -97,7 +97,7 @@ class MainScene(GameScene):
         random.shuffle(wave)
 
         for ship_type in wave:
-            self.current_wave_queue.put(ship_type)
+            self.current_wave_queue.put_nowait(ship_type)
 
     def spawn_enemi_ships(self, count):
         # ajust the count according to the current enemy cap
