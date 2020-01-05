@@ -4,7 +4,7 @@ import math
 import queue
 import random
 from collections import Counter
-from itertools import chain, islice
+from itertools import chain
 
 import pygame
 

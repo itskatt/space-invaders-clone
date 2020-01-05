@@ -43,7 +43,7 @@ class BaseEnemiShip(BaseShip):
 
         self.direction = randint(0, 1)
         self.last_shoot_time = self.game.loop_time
-        
+
         # default values
         self.set_default("health", DEFAULT_ENEMI_SHIP_HEALTH)
         self.set_default("speed", DEFAULT_ENEMI_SHIP_SPEED)

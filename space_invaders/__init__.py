@@ -88,7 +88,8 @@ class Game:
             # self.screen_size = self.screen_width, self.screen_height = SCREEN_SIZE
         else:
             flags = DISPLAY_FLAGS | pygame.HWSURFACE | pygame.FULLSCREEN
-            # self.screen_size = self.screen_width, self.screen_height = self.display_info.current_w, self.display_info.current_h
+            # self.screen_size = self.screen_width, self.screen_height = \
+            # self.display_info.current_w, self.display_info.current_h
 
         self.screen = pygame.display.set_mode(self.screen_size, flags)
         self.screen_rect = self.screen.get_rect()

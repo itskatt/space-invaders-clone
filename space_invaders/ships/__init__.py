@@ -1,5 +1,3 @@
-import random
-
 import pygame
 
 from ..assets import get_sprite
