@@ -15,7 +15,7 @@ class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
 
         self.speed = SHIP_SPEED
 
-        self.normal_img = get_sprite("ship")
+        self.normal_img = get_sprite("ships", "ship")
         self.damaged_img = get_damaged(self.normal_img)
 
         self.image = self.normal_img

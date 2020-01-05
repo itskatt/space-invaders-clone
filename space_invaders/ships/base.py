@@ -42,7 +42,7 @@ class BaseEnemiShip(BaseShip):
         self.scene = scene
 
         self.normal_img = pygame.transform.rotate(
-            get_sprite(self._get_image_name()), 180)  # TODO: change?
+            get_sprite("ships", self._get_image_name()), 180)  # TODO: change?
         self.damaged_img = get_damaged(self.normal_img)
 
         self.image = self.normal_img

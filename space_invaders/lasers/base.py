@@ -44,6 +44,7 @@ class BaseLaser(BaseSprite):
     def __init__(self, game, scene, original_position):
         super().__init__()
         self.image = get_sprite(
+            "lasers",
             ("enemi-" if self.__class__.__name__.startswith("Enemi") else "") + self._get_image_name()
         )  # TODO: change
 
