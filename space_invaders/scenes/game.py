@@ -143,7 +143,7 @@ class MainScene(GameScene):
             counts = [r]
 
         # now place the ships
-        log.debug(f"Spawning {count} ships of typee {ship_type}")
+        log.debug(f"Spawning {count} ships of type {ship_type}")
         for pos in chain.from_iterable([random.sample(possible_positions, c) for c in counts if c]):
             self.enemi_ships.add(ship_type(self.game, self, pos))
 
