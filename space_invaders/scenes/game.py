@@ -213,7 +213,7 @@ class MainScene(GameScene):
     @functools.lru_cache(4)
     def _get_fps_text(self, fps):
         font = pixeled(round(FONT_SIZE / 2))
-        fps_text = font.render(f"FPS: {round(fps)}", False, WHITE)
+        fps_text = font.render(f"FPS: {round(fps)}", True, WHITE)
         return fps_text
 
     def display_fps(self):
