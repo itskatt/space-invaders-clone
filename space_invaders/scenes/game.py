@@ -76,7 +76,7 @@ class MainScene(GameScene):
         maping = {  # TODO: probably move
             1: (
                 lambda score: (score ** 2) / 80 + 5,  # cap func
-                ((RamShip, 20),)  # ship type, count
+                ((EnemiShip, 20),)  # ship type, count
             ),
             2: (
                 lambda score: ((score - 20) ** 2) / 80 + 10,
