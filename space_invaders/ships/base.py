@@ -12,18 +12,23 @@ from ..filters import get_damaged
 class BaseShip(BaseSprite):
     image: pygame.Surface
 
-    def __init__(self, game):
+    def __init__(self, game, image):
         super().__init__()
 
         self.game = game
 
+        self.normal_img = self.image = image
+        self.damaged_img = get_damaged(image)
+
         self.last_hit_time = 0
 
     def fire(self):
-        raise NotImplementedError
+        pass
 
     def on_collision(self, damage):
-        raise NotImplementedError
+        self.health -= damage  # pylint: disable=no-member
+        self.image = self.damaged_img
+        self.last_hit_time = self.game.loop_time
 
     def update(self):
         # can we remove the damage effect, if there is any
@@ -31,37 +36,23 @@ class BaseShip(BaseSprite):
             self.image = self.normal_img
 
 
-class BaseFireingShip(BaseShip):
-    def fire(self):
-        self.scene.lasers.add(self.laser_type.create(self.game, self.scene, self.rect.midbottom, True))
-
-
 class BaseEnemiShip(BaseShip):
     def __init__(self, game, scene, original_x_position):
-        super().__init__(game)
+        super().__init__(
+            game,
+            pygame.transform.rotate(get_sprite("ships", self.image_name), 180)  # TODO: change?
+        )
         self.scene = scene
 
-        self.normal_img = pygame.transform.rotate(
-            get_sprite("ships", self._get_image_name()), 180)  # TODO: change?
-        self.damaged_img = get_damaged(self.normal_img)
-
-        self.image = self.normal_img
         self.rect = self.image.get_rect(midbottom=(original_x_position, 0))
 
         self.direction = randint(0, 1)
-        self.last_shoot_time = self.game.loop_time
 
         # default values
         self.set_default("health", DEFAULT_ENEMI_SHIP_HEALTH)
         self.set_default("speed", DEFAULT_ENEMI_SHIP_SPEED)
-        self.set_default("shoot_interval", randint(8, 12) / 10)
+
         self.awarded_points = 1
-
-    def _get_image_name(self):
-        return self.image_name
-
-    def fire(self):
-        pass
 
     def move(self):
         if self.direction == 0:  # left
@@ -71,9 +62,7 @@ class BaseEnemiShip(BaseShip):
             self.rect.x += (self.speed * self.game.screen_width / BASE_SCREEN_SIZE[0]) * self.game.delta
 
     def on_collision(self, damage):
-        self.health -= damage  # pylint: disable=no-member
-        self.image = self.damaged_img
-        self.last_hit_time = self.game.loop_time
+        super().on_collision(damage)
 
         if self.health <= 0:  # pylint: disable=no-member
             self.game.score += self.awarded_points
@@ -90,17 +79,6 @@ class BaseEnemiShip(BaseShip):
 
         # move the sprite
         self.move()
-
-        # is the ship fully spawned? if not, move it down and don't shoot
-        if self.rect.centery <= self.game.screen_height / 11.25:
-            self.rect.y += 1 * self.game.delta
-            return
-
-        # should it shoot
-        if (self.game.loop_time - self.last_shoot_time) > self.shoot_interval:
-            self.fire()
-            self.last_shoot_time = self.game.loop_time
-
         # prevent ship stacking TODO: make it work eventually. yes, eventually
         # for ship in self.game.enemi_ships.sprites():
         #     if ship == self or ship.rect.x > self.rect.x:
@@ -112,3 +90,50 @@ class BaseEnemiShip(BaseShip):
         #         if not 0 <= self.rect.x >= self.game.screen_width:
         #             self.is_sliding = True
         #             self.move()
+
+
+class BaseFireingShip(BaseEnemiShip):
+    def __init__(self, game, scene, pos):
+        super().__init__(game, scene, pos)
+
+        self.last_shoot_time = self.game.loop_time
+        self.set_default("shoot_interval", randint(8, 12) / 10)
+
+    def fire(self):
+        self.scene.lasers.add(self.laser_type.create(self.game, self.scene, self.rect.midbottom, True))
+
+    def update(self):
+        super().update()
+
+        # is the ship fully spawned? if not, move it down and don't shoot
+        if self.rect.centery <= self.game.screen_height / 11.25:
+            self.rect.y += 1 * self.game.delta
+            return
+
+        # should it shoot
+        if (self.game.loop_time - self.last_shoot_time) > self.shoot_interval:
+            self.fire()
+            self.last_shoot_time = self.game.loop_time
+
+
+class BaseRamingship(BaseEnemiShip):
+    def __init__(self, game, scene, pos):
+        super().__init__(game, scene, pos)
+        self.imgs = [
+            pygame.transform.rotate(self.image, -90),
+            pygame.transform.rotate(self.image, 90)
+        ]
+
+    def update(self):
+        super().update()
+
+        # and down goes the ship
+        self.rect.y += 1 * self.game.delta
+
+        self.image = self.imgs[self.direction]  # TODO: move with direction changing and handle damaged_img
+
+        # damage the ship when we collid with them
+        collision = pygame.sprite.spritecollide(self, [self.game.ship], False)
+        if pygame.sprite.spritecollideany(self, collision, pygame.sprite.collide_mask):
+            self.game.ship.on_collision(self.damage)
+            self.kill()

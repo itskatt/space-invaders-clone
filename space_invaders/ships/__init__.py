@@ -1,24 +1,20 @@
 import pygame
 
 from ..assets import get_sprite
-from ..constants import (DEATH_EVENT, LEFT_MOVEMENT_KEYS,
-                         RIGHT_MOVEMENT_KEYS, SHIP_HEALTH, SHIP_SPEED,
-                         SHOOT_KEY)
-from ..filters import get_damaged
+from ..constants import (DEATH_EVENT, LEFT_MOVEMENT_KEYS, RIGHT_MOVEMENT_KEYS,
+                         SHIP_HEALTH, SHIP_SPEED, SHOOT_KEY)
 from ..lasers import AutoLaser, BasicLaser
-from .base import BaseEnemiShip, BaseFireingShip
+from .base import BaseEnemiShip, BaseFireingShip, BaseRamingship, BaseShip
 
 
-class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
+class Ship(BaseShip):  # TODO: cleanup this class like the others
     def __init__(self, game):
-        super().__init__(game)
-
+        super().__init__(
+            game,
+            get_sprite("ships", "ship")
+        )
         self.speed = SHIP_SPEED
 
-        self.normal_img = get_sprite("ships", "ship")
-        self.damaged_img = get_damaged(self.normal_img)
-
-        self.image = self.normal_img
         self.rect = self.image.get_rect(center=[
             self.game.screen_width / 2,
             self.game.screen_height / 1.11
@@ -38,9 +34,8 @@ class Ship(BaseFireingShip):  # TODO: cleanup this class like the others
         self.game.scene.lasers.add(BasicLaser.create(self.game, self.game.scene, self.rect.midtop, False))
 
     def on_collision(self, damage):
-        self.health -= damage
-        self.image = self.damaged_img
-        self.last_hit_time = self.game.loop_time
+        super().on_collision(damage)
+
         if self.health <= 0:
             pygame.event.post(pygame.event.Event(DEATH_EVENT))
 
@@ -72,3 +67,10 @@ class HeavyEnemiShip(BaseFireingShip, BaseEnemiShip):  # TODO: temporary, for te
     health = 6
     laser_type = BasicLaser
     image_name = "enemi-heavy-ship"
+
+
+class RamShip(BaseRamingship, BaseEnemiShip):
+    speed = 5
+    health = 2
+    damage = 10
+    image_name = "enemi-ram-ship"

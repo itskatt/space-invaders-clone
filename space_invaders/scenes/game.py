@@ -12,7 +12,7 @@ from ..assets import get_sprite, pixeled
 from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
                          ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
                          SHIP_SPAWN_EVENT, WHITE)
-from ..ships import EnemiShip, HeavyEnemiShip
+from ..ships import EnemiShip, HeavyEnemiShip, RamShip
 from . import BaseScene
 
 log = logging.getLogger(__name__)
@@ -76,11 +76,15 @@ class MainScene(GameScene):
         maping = {  # TODO: probably move
             1: (
                 lambda score: (score ** 2) / 80 + 5,  # cap func
-                ((EnemiShip, 20),)  # ship type, count
+                ((RamShip, 20),)  # ship type, count
             ),
             2: (
                 lambda score: ((score - 20) ** 2) / 80 + 10,
                 ((EnemiShip, 15), (HeavyEnemiShip, 10)),
+            ),
+            3: (
+                lambda score: ((score - 30) ** 2) / 80 + 10,
+                ((EnemiShip, 10), (HeavyEnemiShip, 15), (RamShip, 5)),
             ),
             "final": (
                 lambda score: ((score - 40) ** 2) / 80 + 15,
