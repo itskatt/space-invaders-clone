@@ -6,7 +6,7 @@ from ..assets import get_sprite
 from ..base import BaseSprite
 from ..constants import (BASE_SCREEN_SIZE, DEFAULT_ENEMI_SHIP_HEALTH,
                          DEFAULT_ENEMI_SHIP_SPEED, DAMAGED_EFFECT_STAY_TIME)
-from ..filters import get_damaged
+from ..filters import get_damaged, get_rotated
 
 
 class BaseShip(BaseSprite):
@@ -40,7 +40,7 @@ class BaseEnemiShip(BaseShip):
     def __init__(self, game, scene, original_x_position):
         super().__init__(
             game,
-            pygame.transform.rotate(get_sprite("ships", self.image_name), 180)  # TODO: change?
+            get_rotated(get_sprite("ships", self.image_name), 180)
         )
         self.scene = scene
 
@@ -113,8 +113,8 @@ class BaseRamingship(BaseEnemiShip):
     def __init__(self, game, scene, pos):
         super().__init__(game, scene, pos)
         self.imgs = [
-            pygame.transform.rotate(self.image, -90),
-            pygame.transform.rotate(self.image, 90)
+            get_rotated(self.image, -90),
+            get_rotated(self.image, 90)
         ]
         self.image = self.imgs[self.direction]
 
