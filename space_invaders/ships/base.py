@@ -77,26 +77,12 @@ class BaseEnemiShip(BaseShip):
 
     def update(self):
         super().update()
-        # if self.is_sliding:
-        #     self.is_sliding = False
 
         # move the sprite
         self.move()
 
         # make it change direction if it touches the border
         self.turn()
-
-        # prevent ship stacking TODO: make it work eventually. yes, eventually
-        # for ship in self.game.enemi_ships.sprites():
-        #     if ship == self or ship.rect.x > self.rect.x:
-        #         pass
-        #     elif ship.is_sliding and not self.direction == 1:
-        #         pass
-
-        #     elif self.rect.colliderect(ship.rect) and self.direction == ship.direction:
-        #         if not 0 <= self.rect.x >= self.game.screen_width:
-        #             self.is_sliding = True
-        #             self.move()
 
 
 class BaseFireingShip(BaseEnemiShip):
