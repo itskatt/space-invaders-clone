@@ -61,6 +61,13 @@ class BaseEnemiShip(BaseShip):
         elif self.direction == 1:  # right
             self.rect.x += (self.speed * self.game.screen_width / BASE_SCREEN_SIZE[0]) * self.game.delta
 
+    def turn(self):
+        # has the sprite reached the border? if so, reverse time
+        if (self.rect.topleft[0] < 0) or (self.rect.topright[0] > self.game.screen_width):
+            self.direction = int(not self.direction)
+            return True
+        return False
+
     def on_collision(self, damage):
         super().on_collision(damage)
 
@@ -73,12 +80,12 @@ class BaseEnemiShip(BaseShip):
         # if self.is_sliding:
         #     self.is_sliding = False
 
-        # has the sprite reached the border? if so, reverse time
-        if (self.rect.topleft[0] < 0) or (self.rect.topright[0] > self.game.screen_width):
-            self.direction = int(not self.direction)
-
         # move the sprite
         self.move()
+
+        # make it change direction if it touches the border
+        self.turn()
+
         # prevent ship stacking TODO: make it work eventually. yes, eventually
         # for ship in self.game.enemi_ships.sprites():
         #     if ship == self or ship.rect.x > self.rect.x:
@@ -123,6 +130,11 @@ class BaseRamingship(BaseEnemiShip):
             pygame.transform.rotate(self.image, -90),
             pygame.transform.rotate(self.image, 90)
         ]
+        self.image = self.imgs[self.direction]
+
+    def turn(self):
+        if super().turn():
+            self.image = self.imgs[self.direction]
 
     def update(self):
         super().update()
@@ -133,8 +145,6 @@ class BaseRamingship(BaseEnemiShip):
         # has it gone out of the screen ?
         if self.rect.y > self.game.screen_height:
             self.kill()
-
-        self.image = self.imgs[self.direction]  # TODO: move with direction changing and handle damaged_img
 
         # damage the ship when we collid with them
         collision = pygame.sprite.spritecollide(self, [self.game.ship], False)
