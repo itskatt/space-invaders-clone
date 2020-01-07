@@ -86,6 +86,14 @@ class MainScene(GameScene):
                 lambda score: ((score - 30) ** 2) / 80 + 10,
                 ((EnemiShip, 10), (HeavyEnemiShip, 15), (RamShip, 5)),
             ),
+            4: (
+                lambda score: (score * 0.5) / 3,
+                ((EnemiShip, 15), (HeavyEnemiShip, 15), (RamShip, 10)),
+            ),
+            5: (
+                lambda score: math.cos(score) * 6 + 15,
+                ((EnemiShip, 30), (HeavyEnemiShip, 25),)
+            ),
             "final": (
                 lambda score: ((score - 40) ** 2) / 80 + 15,
                 ((EnemiShip, 500), (HeavyEnemiShip, 500))  # TEMPORARY
