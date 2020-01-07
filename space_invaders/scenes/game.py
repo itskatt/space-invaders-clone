@@ -73,7 +73,7 @@ class MainScene(GameScene):
         self.ship.get_event(event)
 
     def get_wave_data(self):
-        maping = {  # TODO: probably move to own file or something similar
+        waves = {  # TODO: probably move to own file or something similar
             1: (
                 lambda score: (score ** 2) / 80 + 5,  # cap func
                 ((EnemiShip, 20),)  # ship type, count
@@ -99,7 +99,7 @@ class MainScene(GameScene):
                 ((EnemiShip, 500), (HeavyEnemiShip, 500))  # TEMPORARY
             )
         }
-        return maping.get(self.wave_count, maping["final"])
+        return waves.get(self.wave_count, waves["final"])
 
     def create_wave(self, ships):
         wave = []
