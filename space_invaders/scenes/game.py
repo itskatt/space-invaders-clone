@@ -73,7 +73,7 @@ class MainScene(GameScene):
         self.ship.get_event(event)
 
     def get_wave_data(self):
-        maping = {  # TODO: probably move
+        maping = {  # TODO: probably move to own file or something similar
             1: (
                 lambda score: (score ** 2) / 80 + 5,  # cap func
                 ((EnemiShip, 20),)  # ship type, count
