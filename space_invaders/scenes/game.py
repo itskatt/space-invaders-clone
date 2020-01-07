@@ -94,9 +94,17 @@ class MainScene(GameScene):
                 lambda score: math.cos(score) * 6 + 15,
                 ((EnemiShip, 30), (HeavyEnemiShip, 25),)
             ),
-            "final": (
-                lambda score: ((score - 40) ** 2) / 80 + 15,
-                ((EnemiShip, 500), (HeavyEnemiShip, 500))  # TEMPORARY
+            6: (
+                lambda score: 5,
+                ((RamShip, 15),)
+            ),
+            7: (
+                lambda score: math.cos(score) * 10 + 20,
+                ((EnemiShip, 5), (HeavyEnemiShip, 30),)
+            ),
+            "final": (  # this wave is purposely imposible (for now ofc)
+                lambda score: 100,
+                ((EnemiShip, 500), (HeavyEnemiShip, 500))
             )
         }
         return waves.get(self.wave_count, waves["final"])
