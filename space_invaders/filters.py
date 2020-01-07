@@ -6,7 +6,7 @@ from .constants import RED
 
 
 @functools.lru_cache()
-def get_damaged(img):  # TODO: move to own file
+def get_damaged(img):
     img = img.copy()
     img.fill(RED, special_flags=pygame.BLEND_RGB_ADD)
     return img
