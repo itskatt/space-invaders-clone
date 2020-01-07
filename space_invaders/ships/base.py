@@ -128,7 +128,11 @@ class BaseRamingship(BaseEnemiShip):
         super().update()
 
         # and down goes the ship
-        self.rect.y += 1 * self.game.delta
+        self.rect.y += self.y_speed * self.game.delta
+
+        # has it gone out of the screen ?
+        if self.rect.y > self.game.screen_height:
+            self.kill()
 
         self.image = self.imgs[self.direction]  # TODO: move with direction changing and handle damaged_img
 

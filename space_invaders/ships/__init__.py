@@ -62,15 +62,16 @@ class EnemiShip(BaseFireingShip, BaseEnemiShip):
     image_name = "enemi-ship"
 
 
-class HeavyEnemiShip(BaseFireingShip, BaseEnemiShip):  # TODO: temporary, for testing
+class HeavyEnemiShip(BaseFireingShip):
     speed = 2.5
     health = 6
     laser_type = BasicLaser
     image_name = "enemi-heavy-ship"
 
 
-class RamShip(BaseRamingship, BaseEnemiShip):
+class RamShip(BaseRamingship):
     speed = 5
+    y_speed = 1.5
     health = 2
     damage = 10
     image_name = "enemi-ram-ship"
