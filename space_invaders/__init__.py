@@ -50,12 +50,6 @@ def parse_args():
         action="store_true",
         default=False
     )
-    parser.add_argument(
-        "--timeout",
-        help="Stop the game after the amount of time provided. Usefull when profiling",
-        type=int,
-        default=None
-    )
     return parser.parse_args()
 
 
@@ -72,7 +66,7 @@ def main():
         log.info(f"SDL version: {(pygame.get_sdl_version())}")
 
         try:
-            game = Game(timeout=args.timeout)
+            game = Game()
             game.mainloop()
         except Exception:
             log.exception("An exception occured:")

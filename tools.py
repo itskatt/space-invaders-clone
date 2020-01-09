@@ -11,7 +11,7 @@ if len(sys.argv) == 1:
     sys.exit("No args provided !")
 
 if sys.argv[1] == "profile":
-    subprocess.run("python -m cProfile -o out.prof run.py --timeout 10".split())
+    subprocess.run("python -m cProfile -o out.prof run.py".split())
     snakeviz.cli.main(["out.prof"])
     os.remove("out.prof")
 

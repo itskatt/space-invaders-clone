@@ -1,5 +1,4 @@
 import logging
-import sys
 import time
 from collections import defaultdict
 
@@ -17,9 +16,7 @@ log = logging.getLogger(__name__)
 
 
 class Game:
-    def __init__(self, *, timeout=None):
-        self.timeout = timeout
-
+    def __init__(self):
         # screen
         self.display_info = pygame.display.Info()
 
@@ -127,10 +124,6 @@ class Game:
             self.scene.draw()
 
             self.scene.update_screen()
-
-            # if self.timeout is set, check if we can quit the game
-            if self.timeout and (self.loop_time - self.start_time) >= self.timeout:
-                sys.exit()
 
             # tick-tock-tick-tock...
             self.delta = self.clock.tick(BASE_FPS) / GAME_SPEED_INFLUENCER
