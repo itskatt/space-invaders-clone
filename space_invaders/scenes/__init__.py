@@ -8,7 +8,14 @@ from .base import MenuSceneContext, MenuSceneNoContext
 
 
 class WelcomeScene(MenuSceneNoContext):
+    def __init__(self, game):
+        super().__init__(game)
+
+        self.add_button(self.screen_rect.center, (100, 50), "BOI")
+
     def process_event(self, event):
+        super().process_event(event)
+
         if event.type == pygame.KEYDOWN:
             if event.key == START_KEY:
                 self.game.start_new_game()
@@ -33,6 +40,8 @@ class WelcomeScene(MenuSceneNoContext):
         return main_text
 
     def draw(self):
+        super().draw()
+
         main_text = self._get_main_text(self.size_mod)
         main_txt_rect = main_text.get_rect(center=(
             self.screen_rect.center[0],

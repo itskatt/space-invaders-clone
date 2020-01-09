@@ -5,6 +5,7 @@ import pygame
 from ..assets import pixeled
 from ..constants import (
     BLACK, FONT_SIZE, TEXT_BLINK_SPEED, TEXT_RESIZE_SPEED, WHITE)
+from ..ui import Button
 
 
 class BaseScene:
@@ -44,6 +45,9 @@ class MenuScene(BaseScene):
         self.size_mod = 100
         self.size_op = operator.add
 
+        # ui elements
+        self.ui_elements = []
+
         # regions to update
         self.to_update = []
 
@@ -62,7 +66,19 @@ class MenuScene(BaseScene):
 
         return surf
 
+    def add_button(self, pos, size, text):
+        b = Button(self, pos, size, text)
+        self.ui_elements.append(b)
+        return b
+
+    def process_event(self, event):
+        for elem in self.ui_elements:
+            elem.process_event(event)
+
     def update(self):
+        for elem in self.ui_elements:
+            elem.update()
+
         self.opacity = self.opacity_op(self.opacity, TEXT_BLINK_SPEED * self.game.delta)
         if self.opacity <= 50:
             self.opacity_op = operator.add
@@ -74,6 +90,10 @@ class MenuScene(BaseScene):
             self.size_op = operator.add
         elif self.size_mod >= 105:
             self.size_op = operator.sub
+
+    def draw(self):
+        for elem in self.ui_elements:
+            elem.draw()
 
     def update_screen(self):
         pygame.display.update(self.to_update)
