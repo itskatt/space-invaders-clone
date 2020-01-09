@@ -21,8 +21,8 @@ elif sys.argv[1] == "build":  # TODO: improve
     shutil.rmtree("__pycache__", True)
 
 elif sys.argv[1] == "clean":
-    shutil.rmtree("build")
-    shutil.rmtree("dist")
+    shutil.rmtree("build", True)
+    shutil.rmtree("dist", True)
     os.remove("spaceinv.spec")
     for path in glob.iglob("**/__pycache__", recursive=True):
-        shutil.rmtree(path)
+        shutil.rmtree(path, True)
