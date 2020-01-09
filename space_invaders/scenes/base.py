@@ -130,6 +130,8 @@ class MenuSceneContext(MenuScene):
             self.screen.blit(self.dark_screen, (0, 0))
 
     def draw(self):
+        super().draw()
+
         text = self.get_text(self.text, FONT_SIZE * 2, opacity=self.opacity)
         text_rect = text.get_rect(center=(self.screen_rect.center))
 

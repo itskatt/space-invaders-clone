@@ -69,7 +69,20 @@ class PauseScene(MenuSceneContext):
     def __init__(self, game, last_scene):
         super().__init__(game, "Paused", "(press ESCAPE to unpause)", last_scene)
 
+        self.add_button(
+            (
+                self.screen_rect.centerx,
+                self.screen_rect.centery * 1.5
+            ), (
+                self.game.screen_width / 10,
+                self.game.screen_height / 13.5
+            ),
+            "Quit", self.game.stop
+        )
+
     def process_event(self, event):
+        super().process_event(event)
+
         if event.type == pygame.KEYDOWN:
             if event.key == PAUSE_KEY and self.game.is_paused:
                 self.game.is_paused = False
@@ -80,7 +93,20 @@ class DeathScene(MenuSceneContext):
     def __init__(self, game, last_scene):
         super().__init__(game, "You died", "Press R to restart", last_scene)
 
+        self.add_button(
+            (
+                self.screen_rect.centerx,
+                self.screen_rect.centery * 1.5
+            ), (
+                self.game.screen_width / 10,
+                self.game.screen_height / 13.5
+            ),
+            "Quit", self.game.stop
+        )
+
     def process_event(self, event):
+        super().process_event(event)
+
         if event.type == pygame.KEYDOWN:
             if event.key == RESTART_KEY:
                 self.game.start_new_game()
