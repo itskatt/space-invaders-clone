@@ -8,7 +8,8 @@ from .assets import load_assets
 from .constants import (BASE_FPS, BLOCKED_EVENTS, DEATH_EVENT, DISPLAY_FLAGS,
                         FULLSCREEN_KEY, GAME_SPEED_INFLUENCER, PAUSE_KEY,
                         SCREEN_SIZE, WINDOW_TITLE)
-from .scenes import DeathScene, MenuScene, PauseScene, WelcomeScene
+from .scenes import DeathScene, PauseScene, WelcomeScene
+from .scenes.base import MenuScene
 from .scenes.game import MainScene
 from .ships import Ship
 
