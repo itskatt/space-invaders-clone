@@ -78,7 +78,7 @@ def main():
             log.exception("An exception occured:")
 
             if not args.no_reports:  # TODO: save to a different path
-                with open(DIR / f"crash_{round(time.time())}.txt", "w", encoding="utf=8") as f:
+                with open(DIR / f"CRASH_{round(time.time())}.txt", "w", encoding="utf=8") as f:
                     traceback.print_exc(file=f)
                     log.info("Created crash report")
 
