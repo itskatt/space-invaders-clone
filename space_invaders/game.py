@@ -6,8 +6,9 @@ import pygame
 
 from .assets import load_assets
 from .constants import (BASE_FPS, BLOCKED_EVENTS, DEATH_EVENT, DISPLAY_FLAGS,
-                        FULLSCREEN_KEY, GAME_SPEED_INFLUENCER, PAUSE_KEY,
-                        SCREEN_SIZE, WINDOW_TITLE)
+                        FULLSCREEN_KEY, GAME_SPEED_INFLUENCER,
+                        MOUSE_VISIBLE_TIME, PAUSE_KEY, SCREEN_SIZE,
+                        WINDOW_TITLE)
 from .scenes import DeathScene, PauseScene, WelcomeScene
 from .scenes.base import MenuScene
 from .scenes.game import MainScene
@@ -51,6 +52,9 @@ class Game:
 
         # keys
         self.pressed_keys = defaultdict(bool)
+
+        # mouse pointer
+        self.last_movement = self.loop_time
 
         # blocked events
         for event in BLOCKED_EVENTS:
@@ -106,6 +110,10 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.stop()
 
+                elif event.type == pygame.MOUSEMOTION:
+                    self.last_movement = self.loop_time
+                    pygame.mouse.set_visible(True)
+
                 elif event.type == pygame.KEYUP:
                     self.pressed_keys[event.key] = False
 
@@ -124,6 +132,10 @@ class Game:
                     self.switch_scene(DeathScene(self, self.scene), scene_cleanup=False)
 
                 self.scene.process_event(event)
+
+            if (self.loop_time - self.last_movement) > MOUSE_VISIBLE_TIME:
+                self.last_movement = -self.loop_time
+                pygame.mouse.set_visible(False)
 
             # main logic
             self.scene.update()
