@@ -24,10 +24,11 @@ class BaseUIElement:
 
 
 class Button(BaseUIElement):
-    def __init__(self, parent, pos, size, text):
+    def __init__(self, parent, pos, size, text, func):
         super().__init__(parent, pos, size)
 
         self.text = text
+        self.func = func
 
         self.is_highlighted = False
 
@@ -61,6 +62,10 @@ class Button(BaseUIElement):
                 self.is_highlighted = True
             else:
                 self.is_highlighted = False
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.func()
 
     def draw(self):
         self.parent.game.screen.blit(self._get_surf(self.is_highlighted), self.rect)

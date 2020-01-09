@@ -66,8 +66,8 @@ class MenuScene(BaseScene):
 
         return surf
 
-    def add_button(self, pos, size, text):
-        b = Button(self, pos, size, text)
+    def add_button(self, pos, size, text, func):
+        b = Button(self, pos, size, text, func)
         self.ui_elements.append(b)
         return b
 

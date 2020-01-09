@@ -11,7 +11,7 @@ class WelcomeScene(MenuSceneNoContext):
     def __init__(self, game):
         super().__init__(game)
 
-        self.add_button(self.screen_rect.center, (100, 50), "BOI")
+        self.add_button(self.screen_rect.center, (100, 50), "BOI", lambda: print("ya"))
 
     def process_event(self, event):
         super().process_event(event)
