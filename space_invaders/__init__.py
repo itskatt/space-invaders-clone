@@ -12,7 +12,7 @@ from contextlib import contextmanager
 import pygame
 
 from .constants import DIR, WINDOW_TITLE
-from .game import Game
+from .game import Game, Stop
 
 log = logging.getLogger(__name__)
 
@@ -68,6 +68,8 @@ def main():
         try:
             game = Game()
             game.mainloop()
+        except Stop:
+            pass
         except Exception:
             log.exception("An exception occured:")
 

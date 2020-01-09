@@ -47,7 +47,7 @@ class Button(BaseUIElement):
             [(0, 0), (self.rect.width, 0), self.rect.size, (0, self.rect.height)],
             round(max(self.rect.size) * 0.1)
         )
-        font = pixeled(self.rect.height / 2)
+        font = pixeled(self.rect.height / 2.2)
         txt = font.render(self.text, True, WHITE)
         txt_rect = txt.get_rect(center=(
             round(self.rect.width / 2),

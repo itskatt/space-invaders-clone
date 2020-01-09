@@ -11,7 +11,16 @@ class WelcomeScene(MenuSceneNoContext):
     def __init__(self, game):
         super().__init__(game)
 
-        self.add_button(self.screen_rect.center, (100, 50), "BOI", lambda: print("ya"))
+        self.add_button(
+            (
+                self.screen_rect.centerx,
+                self.screen_rect.centery * 1.5
+            ), (
+                self.game.screen_width / 10,
+                self.game.screen_height / 13.5
+            ),
+            "Quit", self.game.stop
+        )
 
     def process_event(self, event):
         super().process_event(event)

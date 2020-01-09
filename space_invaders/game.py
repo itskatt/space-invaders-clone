@@ -16,6 +16,10 @@ from .ships import Ship
 log = logging.getLogger(__name__)
 
 
+class Stop(Exception):
+    pass
+
+
 class Game:
     def __init__(self):
         # screen
@@ -88,17 +92,19 @@ class Game:
 
         self.is_fullscreen = not self.is_fullscreen
 
+    def stop(self):
+        log.info("Quitting")
+        raise Stop("it's time to stop")
+
     def mainloop(self):
-        running = True
-        while running:
+        while True:
             self.loop_time = time.time()
 
             # event processing
             for event in pygame.event.get():  # NOTE: check BOCKED_EVENTS before messing with new events
 
                 if event.type == pygame.QUIT:
-                    log.info("Quitting")
-                    running = False
+                    self.stop()
 
                 elif event.type == pygame.KEYUP:
                     self.pressed_keys[event.key] = False
