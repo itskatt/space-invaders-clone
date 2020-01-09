@@ -57,9 +57,7 @@ DEATH_EVENT = pygame.USEREVENT + 2
 
 # blocked events
 BLOCKED_EVENTS = [  # events not in use, blocked for performance
-    # pygame.MOUSEBUTTONDOWN,
     pygame.MOUSEBUTTONUP,
-    # pygame.MOUSEMOTION,
     # pygame.MOUSEWHEEL,
     pygame.JOYAXISMOTION,
     pygame.JOYBALLMOTION,
