@@ -93,7 +93,7 @@ class DeathScene(MenuSceneContext):
     def __init__(self, game, last_scene):
         super().__init__(game, "You died", "Press R to restart", last_scene)
 
-        self.add_button(
+        self.add_button(  # TODO: dry
             (
                 self.screen_rect.centerx,
                 self.screen_rect.centery * 1.5
