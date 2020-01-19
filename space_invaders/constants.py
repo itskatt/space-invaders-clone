@@ -54,9 +54,13 @@ DEFAULT_ENEMI_SHIP_SPEED = 3
 DEFAULT_LASER_SPEED = 5
 DEFAULT_LASER_DAMAGE = 1
 
+# power-ups
+POWERUP_SPAWN_INTERVAL = 3000
+
 # custom events
 SHIP_SPAWN_EVENT = pygame.USEREVENT + 1
 DEATH_EVENT = pygame.USEREVENT + 2
+POWERUP_SPAWN_EVENT = pygame.USEREVENT + 3
 
 # blocked events
 BLOCKED_EVENTS = [  # events not in use, blocked for performance

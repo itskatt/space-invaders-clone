@@ -10,8 +10,10 @@ import pygame
 
 from ..assets import get_sprite, pixeled
 from ..constants import (BG_SCROOL_SPEED, BLACK, BLUE,
-                         ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE, SHIP_HEALTH,
-                         SHIP_SPAWN_EVENT, WHITE)
+                         ENEMI_SHIP_SPAWN_INTERVAL, FONT_SIZE,
+                         POWERUP_SPAWN_EVENT, POWERUP_SPAWN_INTERVAL,
+                         SHIP_HEALTH, SHIP_SPAWN_EVENT, WHITE)
+from ..powerups import HealthBoost
 from ..ships import EnemiShip, HeavyEnemiShip, RamShip
 from .base import BaseScene
 
@@ -43,10 +45,12 @@ class MainScene(GameScene):
         # sprites
         self.lasers = pygame.sprite.Group()
         self.enemi_ships = pygame.sprite.Group()
+        self.powerups = pygame.sprite.Group()
 
         self.objects = [  # TODO: change to custom class for ex ?
             self.lasers,
-            self.enemi_ships
+            self.enemi_ships,
+            self.powerups
         ]
 
         # wave managing
@@ -58,6 +62,7 @@ class MainScene(GameScene):
         # scene action init
         self.spawn_enemi_ships(5)
         pygame.time.set_timer(SHIP_SPAWN_EVENT, ENEMI_SHIP_SPAWN_INTERVAL)
+        pygame.time.set_timer(POWERUP_SPAWN_EVENT, POWERUP_SPAWN_INTERVAL)
 
     def cleanup(self):
         for obj in self.objects:
@@ -69,6 +74,13 @@ class MainScene(GameScene):
     def process_event(self, event):
         if event.type == SHIP_SPAWN_EVENT:
             self.spawn_enemi_ships(random.randint(2, 4))
+
+        elif event.type == POWERUP_SPAWN_EVENT:
+            if self.ship.health <= 10:
+                self.powerups.add(HealthBoost(
+                    self.game, self, (
+                        random.randrange(self.game.screen_width), 0)
+                ))
 
         self.ship.process_event(event)
 
