@@ -23,7 +23,7 @@ class Ship(BaseShip):  # TODO: cleanup this class like the others
 
         self.health = SHIP_HEALTH
 
-    def get_event(self, event):
+    def process_event(self, event):
         if event.type == pygame.KEYDOWN:
             key = event.key
 

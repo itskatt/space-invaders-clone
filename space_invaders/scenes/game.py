@@ -70,7 +70,7 @@ class MainScene(GameScene):
         if event.type == SHIP_SPAWN_EVENT:
             self.spawn_enemi_ships(random.randint(2, 4))
 
-        self.ship.get_event(event)
+        self.ship.process_event(event)
 
     def get_wave_data(self):
         waves = {  # TODO: probably move to own file or something similar
