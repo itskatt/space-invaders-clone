@@ -10,8 +10,6 @@ from ..filters import get_damaged, get_rotated
 
 
 class BaseShip(BaseSprite):
-    image: pygame.Surface
-
     def __init__(self, game, image):
         super().__init__()
 

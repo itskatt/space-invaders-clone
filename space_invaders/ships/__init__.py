@@ -4,6 +4,7 @@ from ..assets import get_sprite
 from ..constants import (DEATH_EVENT, LEFT_MOVEMENT_KEYS, RIGHT_MOVEMENT_KEYS,
                          SHIP_HEALTH, SHIP_SPEED, SHOOT_KEY)
 from ..lasers import AutoLaser, BasicLaser
+from ..weapons import BasicShooter
 from .base import BaseEnemiShip, BaseFireingShip, BaseRamingship, BaseShip
 
 
@@ -21,6 +22,8 @@ class Ship(BaseShip):  # TODO: cleanup this class like the others
         ])
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.weapon = BasicShooter(self, "midtop")
+
         self.health = SHIP_HEALTH
 
     def process_event(self, event):
@@ -28,10 +31,7 @@ class Ship(BaseShip):  # TODO: cleanup this class like the others
             key = event.key
 
             if key == SHOOT_KEY:  # fire
-                self.fire()
-
-    def fire(self):
-        self.game.scene.lasers.add(BasicLaser.create(self.game, self.game.scene, self.rect.midtop, False))
+                self.weapon.fire()
 
     def on_collision(self, damage):
         super().on_collision(damage)
