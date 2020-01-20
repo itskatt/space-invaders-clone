@@ -76,6 +76,9 @@ class MainScene(GameScene):
             self.spawn_enemi_ships(random.randint(2, 4))
 
         elif event.type == POWERUP_SPAWN_EVENT:
+            # for now, the health boost is the only powerup,
+            # so its normal that everything is centered around
+            # it, for now
             if self.ship.health <= 10:
                 self.powerups.add(HealthBoost(
                     self.game, self, (

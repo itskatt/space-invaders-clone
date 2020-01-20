@@ -55,7 +55,7 @@ DEFAULT_LASER_SPEED = 5
 DEFAULT_LASER_DAMAGE = 1
 
 # power-ups
-POWERUP_SPAWN_INTERVAL = 60_000  # every min
+POWERUP_SPAWN_INTERVAL = 45_000  # every 45 secs
 
 # custom events
 SHIP_SPAWN_EVENT = pygame.USEREVENT + 1
