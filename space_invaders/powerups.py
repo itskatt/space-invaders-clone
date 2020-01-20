@@ -2,7 +2,7 @@ import pygame
 
 from .assets import get_sprite
 from .base import BaseSprite
-from .constants import BASE_SCREEN_SIZE, HEALTH_BOOST_SPEED
+from .constants import BASE_SCREEN_SIZE
 
 
 class BasePowerup(BaseSprite):
@@ -13,8 +13,6 @@ class BasePowerup(BaseSprite):
         self.rect = self.image.get_rect(center=pos)
 
         self.scene = scene
-
-        self.speed = HEALTH_BOOST_SPEED
 
     def action(self, target):
         pass
@@ -42,4 +40,5 @@ class BaseHealthBoost(BasePowerup):
 
 class HealthBoost(BaseHealthBoost):
     amount = 5
+    speed = 5
     image_name = "heart"
