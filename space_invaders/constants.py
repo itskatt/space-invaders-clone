@@ -55,7 +55,7 @@ DEFAULT_LASER_SPEED = 5
 DEFAULT_LASER_DAMAGE = 1
 
 # power-ups
-POWERUP_SPAWN_INTERVAL = 3000
+POWERUP_SPAWN_INTERVAL = 60_000  # every min
 
 # custom events
 SHIP_SPAWN_EVENT = pygame.USEREVENT + 1
@@ -89,4 +89,4 @@ WHITE = pygame.Color(255, 255, 255)
 BLACK = pygame.Color(0, 0, 0)
 RED = pygame.Color(255, 0, 0)
 BLUE = pygame.Color(51, 207, 255)
-GREEN = pygame.Color(0, 255, 0)
+GREEN = pygame.Color(35, 247, 35)
