@@ -4,6 +4,7 @@ from ..assets import get_sprite
 from ..constants import (DEATH_EVENT, LEFT_MOVEMENT_KEYS, RIGHT_MOVEMENT_KEYS,
                          SHIP_HEALTH, SHIP_SPEED, SHOOT_KEY)
 from ..lasers import AutoLaser, BasicLaser
+from ..utils import clamp
 from ..weapons import BasicShooter
 from .base import BaseEnemiShip, BaseFireingShip, BaseRamingship, BaseShip
 
@@ -27,7 +28,8 @@ class Ship(BaseShip):  # TODO: cleanup this class like the others
         self.health = SHIP_HEALTH
 
     def heal(self, amount):
-        pass
+        new = self.health + amount
+        self.health = clamp(0, SHIP_HEALTH, new)
 
     def process_event(self, event):
         if event.type == pygame.KEYDOWN:

@@ -2,7 +2,7 @@ import pygame
 
 from .assets import get_sprite
 from .base import BaseSprite
-from .constants import BASE_SCREEN_SIZE
+from .constants import BASE_SCREEN_SIZE, HEALTH_BOOST_SPEED
 
 
 class BasePowerup(BaseSprite):
@@ -15,7 +15,7 @@ class BasePowerup(BaseSprite):
         self.game = game
         self.scene = scene
 
-        self.speed = 2  # temporary
+        self.speed = HEALTH_BOOST_SPEED
 
     def action(self, target):
         pass
@@ -38,7 +38,7 @@ class BasePowerup(BaseSprite):
 
 class BaseHealthBoost(BasePowerup):
     def action(self, target):
-        target.health += self.amount
+        target.heal(self.amount)
 
 
 class HealthBoost(BaseHealthBoost):
