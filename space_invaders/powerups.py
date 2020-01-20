@@ -40,5 +40,5 @@ class BaseHealthBoost(BasePowerup):
 
 class HealthBoost(BaseHealthBoost):
     amount = 5
-    speed = 5
+    speed = 2
     image_name = "heart"
