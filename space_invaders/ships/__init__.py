@@ -3,6 +3,7 @@ import pygame
 from ..assets import get_sprite
 from ..constants import (DEATH_EVENT, LEFT_MOVEMENT_KEYS, RIGHT_MOVEMENT_KEYS,
                          SHIP_HEALTH, SHIP_SPEED, SHOOT_KEY)
+from ..filters import get_healed
 from ..lasers import AutoLaser, BasicLaser
 from ..utils import clamp
 from ..weapons import BasicShooter
@@ -11,10 +12,10 @@ from .base import BaseEnemiShip, BaseFireingShip, BaseRamingship, BaseShip
 
 class Ship(BaseShip):  # TODO: cleanup this class like the others
     def __init__(self, game):
-        super().__init__(
-            game,
-            get_sprite("ships", "ship")
-        )
+        sprite = get_sprite("ships", "ship")
+        super().__init__(game, sprite)
+        self.healed_img = get_healed(sprite)
+
         self.speed = SHIP_SPEED
 
         self.rect = self.image.get_rect(center=[
@@ -28,6 +29,9 @@ class Ship(BaseShip):  # TODO: cleanup this class like the others
         self.health = SHIP_HEALTH
 
     def heal(self, amount):
+        self.image = self.healed_img
+        self.last_hit_time = self.game.loop_time
+
         new = self.health + amount
         self.health = clamp(0, SHIP_HEALTH, new)
 

@@ -28,7 +28,7 @@ class BaseShip(BaseSprite):
 
     def update(self):
         # can we remove the damage effect, if there is any
-        if self.image == self.damaged_img and (self.game.loop_time - self.last_hit_time) >= DAMAGED_EFFECT_STAY_TIME:
+        if self.image != self.normal_img and (self.game.loop_time - self.last_hit_time) >= DAMAGED_EFFECT_STAY_TIME:
             self.image = self.normal_img
 
 
