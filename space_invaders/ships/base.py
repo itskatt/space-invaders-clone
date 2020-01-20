@@ -11,9 +11,7 @@ from ..filters import get_damaged, get_rotated
 
 class BaseShip(BaseSprite):
     def __init__(self, game, image):
-        super().__init__()
-
-        self.game = game
+        super().__init__(game)
 
         self.normal_img = self.image = image
         self.damaged_img = get_damaged(image)

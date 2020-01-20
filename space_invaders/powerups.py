@@ -7,12 +7,11 @@ from .constants import BASE_SCREEN_SIZE, HEALTH_BOOST_SPEED
 
 class BasePowerup(BaseSprite):
     def __init__(self, game, scene, pos):
-        super().__init__()
+        super().__init__(game)
 
-        self.image = get_sprite("")
+        self.image = get_sprite("powerups", self.image_name)
         self.rect = self.image.get_rect(center=pos)
 
-        self.game = game
         self.scene = scene
 
         self.speed = HEALTH_BOOST_SPEED
@@ -43,3 +42,4 @@ class BaseHealthBoost(BasePowerup):
 
 class HealthBoost(BaseHealthBoost):
     amount = 5
+    image_name = "heart"
