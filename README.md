@@ -1,12 +1,14 @@
-# Space Invaders
+# Space Invaders Clone
+
+A clone of the classic space invaders game made in Python with pygame to practice my skills.
 
 ## Running the game
 
 1) **Clone it and cd into it**
 
     ```sh
-    git clone ...
-    cd ...
+    git clone https://github.com/itskatt/space-invaders-clone
+    cd space-invaders-clone
     ```
 
 2) **Setup an virtual environement (optional)**
@@ -31,6 +33,4 @@
 
     ```sh
     python run.py
-    # or
-    python -m ...
     ```
